@@ -1,0 +1,10 @@
+name = "Simple"
+description = "A minimal Hugo theme to avoid submodule dependencies"
+homepage = ""
+tags = ["blog", "minimal", "simple"]
+features = ["responsive"]
+min_version = "0.80.0"
+
+[author]
+  name = "Auto-generated"
+  homepage = ""
