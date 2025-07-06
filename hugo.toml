@@ -1,7 +1,7 @@
 baseURL = "https://gaarutyunov.github.io/blog"
 languageCode = "en-us"
 title = "German Arutyunov's Blog"
-theme = "terminal"
+theme = "simple"
 
 [params]
   # dir name of your main content (default is `content/posts`).

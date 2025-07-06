@@ -1,6 +1,6 @@
 # Technical Blog
 
-A modern technical blog built with [Hugo](https://gohugo.io/) using the [Terminal theme](https://themes.gohugo.io/themes/hugo-theme-terminal/) and deployed on GitHub Pages.
+A modern technical blog built with [Hugo](https://gohugo.io/) using a custom simple theme and deployed on GitHub Pages.
 
 ## 🚀 Live Site
 
@@ -9,10 +9,10 @@ The blog is available at: [https://gaarutyunov.github.io/blog](https://gaarutyun
 ## 🛠 Technology Stack
 
 - **Static Site Generator**: Hugo
-- **Theme**: Terminal theme by [@panr](https://github.com/panr/hugo-theme-terminal)
+- **Theme**: Custom simple theme
 - **Hosting**: GitHub Pages
 - **Deployment**: GitHub Actions (automated)
-- **Styling**: Terminal-inspired design with orange color scheme
+- **Styling**: Clean and minimal design
 
 ## 📁 Project Structure
 
@@ -25,7 +25,7 @@ blog/
 │   ├── about.md         # About page
 │   └── showcase.md      # Project showcase
 ├── static/              # Static assets
-├── themes/              # Hugo themes (git submodule)
+├── themes/              # Hugo themes
 ├── hugo.toml           # Hugo configuration
 └── README.md           # This file
 ```
@@ -46,17 +46,12 @@ blog/
    cd blog
    ```
 
-2. **Initialize the theme submodule**:
-   ```bash
-   git submodule update --init --recursive
-   ```
-
-3. **Start the development server**:
+2. **Initialize and build the site**:
    ```bash
    hugo server -D
    ```
 
-4. **Open your browser** and navigate to `http://localhost:1313`
+3. **Open your browser** and navigate to `http://localhost:1313`
 
 ### Creating New Content
 
@@ -103,12 +98,11 @@ draft: false
 
 ## 🎨 Theme Configuration
 
-The Terminal theme is configured in `hugo.toml` with:
+The simple theme is configured in `hugo.toml` with:
 
-- **Color Scheme**: Orange
+- **Color Scheme**: Clean and minimal
 - **Menu Items**: About, Showcase
 - **Features**: Reading time, responsive design
-- **Social**: Twitter card support (configurable)
 
 ## 🚀 Deployment
 
@@ -139,9 +133,6 @@ hugo --minify
 
 # Create new content
 hugo new posts/title.md
-
-# Update theme
-git submodule update --remote themes/terminal
 ```
 
 ## 🛡 GitHub Pages Configuration
@@ -161,15 +152,14 @@ git submodule update --remote themes/terminal
 
 ## 📄 License
 
-This project is open source. The Terminal theme is licensed under the MIT License.
+This project is open source and available under the MIT License.
 
 ## 🔗 Links
 
 - [Hugo Documentation](https://gohugo.io/documentation/)
-- [Terminal Theme](https://github.com/panr/hugo-theme-terminal)
 - [GitHub Pages](https://pages.github.com/)
 - [Hugo Themes](https://themes.gohugo.io/)
 
 ---
 
-Built with ❤️ using Hugo and the Terminal theme.
+Built with ❤️ using Hugo and a custom simple theme.
