@@ -1,0 +1,115 @@
+{{ $currentSeries := .Params.series }}
+{{ $seriesTitle := (index $currentSeries 0) }}
+{{ $seriesIndex := .Params.series_index | default 1 }}
+
+<div class="series-nav">
+  <div class="series-info">
+    <h3>📚 Part {{ $seriesIndex }} of the series: 
+      <a href="{{ (urlize (printf "series/%s/" $seriesTitle)) | absLangURL }}">{{ $seriesTitle }}</a>
+    </h3>
+  </div>
+  
+  {{ $seriesPosts := where .Site.RegularPages "Params.series" "intersect" $currentSeries }}
+  {{ $seriesPosts := $seriesPosts.ByParam "series_index" }}
+  
+  {{ if gt (len $seriesPosts) 1 }}
+    <div class="series-posts">
+      <h4>All posts in this series:</h4>
+      <ol>
+        {{ range $seriesPosts }}
+          <li>
+            {{ if eq .Permalink $.Permalink }}
+              <strong>{{ .Title }}</strong> (current)
+            {{ else }}
+              <a href="{{ .Permalink }}">{{ .Title }}</a>
+            {{ end }}
+          </li>
+        {{ end }}
+      </ol>
+    </div>
+    
+    <div class="series-navigation">
+      {{ $currentIndex := 0 }}
+      {{ range $index, $post := $seriesPosts }}
+        {{ if eq $post.Permalink $.Permalink }}
+          {{ $currentIndex = $index }}
+        {{ end }}
+      {{ end }}
+      
+      {{ if gt $currentIndex 0 }}
+        {{ $prevPost := index $seriesPosts (sub $currentIndex 1) }}
+        <div class="series-prev">
+          ← Previous: <a href="{{ $prevPost.Permalink }}">{{ $prevPost.Title }}</a>
+        </div>
+      {{ end }}
+      
+      {{ if lt $currentIndex (sub (len $seriesPosts) 1) }}
+        {{ $nextPost := index $seriesPosts (add $currentIndex 1) }}
+        <div class="series-next">
+          Next: <a href="{{ $nextPost.Permalink }}">{{ $nextPost.Title }}</a> →
+        </div>
+      {{ end }}
+    </div>
+  {{ end }}
+</div>
+
+<style>
+.series-nav {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.series-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.series-posts {
+  margin: 1rem 0;
+}
+
+.series-posts h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.series-posts ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.series-posts li {
+  margin: 0.25rem 0;
+}
+
+.series-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.series-prev, .series-next {
+  font-size: 0.9rem;
+}
+
+.series-prev a, .series-next a {
+  text-decoration: none;
+}
+
+.series-prev a:hover, .series-next a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .series-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+</style>
