@@ -1,0 +1,242 @@
+{{ define "main" }}
+<div class="series-index">
+  <h1>📚 Blog Series</h1>
+  <p>Explore my collection of blog series on various topics.</p>
+  
+  {{ $seriesCount := len .Data.Terms }}
+  
+  {{ if gt $seriesCount 0 }}
+    <div class="series-list">
+      {{ range .Data.Terms.ByCount.Reverse }}
+        {{ $seriesName := .Name }}
+        {{ $seriesPosts := .Pages.ByParam "series_index" }}
+        {{ $postCount := len $seriesPosts }}
+        {{ $latestPost := index $seriesPosts 0 }}
+        {{ $firstPost := index $seriesPosts (sub $postCount 1) }}
+        
+        <div class="series-card">
+          <div class="series-card-header">
+            <h2><a href="{{ .Page.Permalink }}">{{ $seriesName }}</a></h2>
+            <div class="series-card-meta">
+              <span class="series-post-count">{{ $postCount }} {{ if eq $postCount 1 }}post{{ else }}posts{{ end }}</span>
+              {{ if $latestPost }}
+                <span class="series-updated">Updated {{ $latestPost.Date.Format "Jan 2, 2006" }}</span>
+              {{ end }}
+            </div>
+          </div>
+          
+          {{ if $firstPost.Params.description }}
+            <p class="series-description">{{ $firstPost.Params.description | truncate 150 }}</p>
+          {{ end }}
+          
+          <div class="series-progress">
+            <div class="series-posts-preview">
+              {{ range $index, $post := $seriesPosts }}
+                {{ if lt $index 3 }}
+                  <div class="series-post-preview">
+                    <span class="series-post-number">{{ add $index 1 }}</span>
+                    <a href="{{ $post.Permalink }}">{{ $post.Title }}</a>
+                    <span class="series-post-date">{{ $post.Date.Format "Jan 2" }}</span>
+                  </div>
+                {{ end }}
+              {{ end }}
+              
+              {{ if gt $postCount 3 }}
+                <div class="series-post-preview series-more">
+                  <span class="series-post-number">...</span>
+                  <a href="{{ .Page.Permalink }}">{{ sub $postCount 3 }} more posts</a>
+                </div>
+              {{ end }}
+            </div>
+          </div>
+          
+          <div class="series-card-footer">
+            <a href="{{ .Page.Permalink }}" class="series-view-all">View Series →</a>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  {{ else }}
+    <p>No blog series found.</p>
+  {{ end }}
+</div>
+
+<style>
+.series-index {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.series-list {
+  display: grid;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.series-card {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.series-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.series-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.series-card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.series-card-header h2 a {
+  text-decoration: none;
+  color: #333;
+}
+
+.series-card-header h2 a:hover {
+  text-decoration: underline;
+}
+
+.series-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.9rem;
+  color: #666;
+  gap: 0.25rem;
+}
+
+.series-post-count {
+  background: #007bff;
+  color: white;
+  border-radius: 12px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.series-updated {
+  font-size: 0.8rem;
+}
+
+.series-description {
+  color: #666;
+  margin: 0 0 1.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.series-progress {
+  margin: 1rem 0;
+}
+
+.series-posts-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.series-post-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.series-post-number {
+  background: #e9ecef;
+  color: #333;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.series-post-preview a {
+  text-decoration: none;
+  color: #333;
+  flex-grow: 1;
+  font-size: 0.9rem;
+}
+
+.series-post-preview a:hover {
+  text-decoration: underline;
+}
+
+.series-post-date {
+  color: #666;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.series-more {
+  font-style: italic;
+}
+
+.series-more .series-post-number {
+  background: #007bff;
+  color: white;
+}
+
+.series-card-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  text-align: right;
+}
+
+.series-view-all {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.series-view-all:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .series-card {
+    padding: 1.5rem;
+  }
+  
+  .series-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .series-card-meta {
+    align-items: flex-start;
+  }
+  
+  .series-post-preview {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .series-post-date {
+    align-self: flex-end;
+  }
+}
+</style>
+{{ end }}
