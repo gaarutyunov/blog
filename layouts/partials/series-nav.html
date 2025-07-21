@@ -5,7 +5,7 @@
 <div class="series-nav">
   <div class="series-info">
     <h3>📚 Part {{ $seriesIndex }} of the series: 
-      <a href="{{ (urlize (printf "series/%s/" $seriesTitle)) | absLangURL }}">{{ $seriesTitle }}</a>
+      <a href="{{ (urlize (printf "series/%s/" $seriesTitle)) | relURL }}">{{ $seriesTitle }}</a>
     </h3>
   </div>
   
@@ -55,16 +55,24 @@
 
 <style>
 .series-nav {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 1rem;
-  margin: 1rem 0;
+  margin: 2rem 0;
+  padding: 0;
 }
 
 .series-info h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: normal;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.series-info a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.series-info a:hover {
+  text-decoration: underline;
 }
 
 .series-posts {
@@ -74,6 +82,7 @@
 .series-posts h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
 }
 
 .series-posts ol {
@@ -89,17 +98,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
+  margin-top: 1.5rem;
 }
 
 .series-prev, .series-next {
   font-size: 0.9rem;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
 }
 
 .series-prev a, .series-next a {
   text-decoration: none;
+  color: var(--accent);
 }
 
 .series-prev a:hover, .series-next a:hover {

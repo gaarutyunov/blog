@@ -20,13 +20,11 @@
     {{- end -}}
   </div>
 
-  {{ if .Params.tags }}
     <span class="post-tags">
       {{ range .Params.tags }}
-      #<a href="{{ (urlize (printf "tags/%s/" .)) | absLangURL }}">{{ . }}</a>&nbsp;
+      #<a href="{{ (urlize (printf "tags/%s/" .)) | relURL }}">{{ . }}</a>&nbsp;
       {{ end }}
     </span>
-  {{ end }}
 
   {{ if .Params.series }}
     {{ partial "series-nav.html" . }}

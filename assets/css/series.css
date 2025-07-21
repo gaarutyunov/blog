@@ -1,0 +1,62 @@
+/* Series styles - using same structure as posts */
+.posts {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.posts h1 {
+  margin-bottom: 2rem;
+  color: var(--foreground);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.5rem;
+}
+
+.post.on-list {
+  padding: 2rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.post.on-list:last-child {
+  border-bottom: none;
+}
+
+.post-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.post-title a {
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+.post-title a:hover {
+  text-decoration: underline;
+}
+
+.post-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.post-content {
+  margin-bottom: 1rem;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .posts {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+  
+  .post-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

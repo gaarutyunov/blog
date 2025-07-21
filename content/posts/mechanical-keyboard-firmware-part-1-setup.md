@@ -51,14 +51,7 @@ We'll need some additional tools for embedded development:
 
 ```bash
 # For flashing and debugging
-cargo install probe-rs --features cli
-
-# For generating UF2 files (if needed)
-cargo install uf2conv
-
-# For binary inspection
-cargo install cargo-binutils
-rustup component add llvm-tools-preview
+cargo install probe-rs-tools
 ```
 
 ## Exploring Available Frameworks
@@ -91,13 +84,13 @@ RTIC is another excellent framework that focuses on:
 - Split keyboard support
 - Wireless (BLE) capabilities
 
-## Why We're Using Embassy with rmk
+## Why We're Using Embassy
 
-For this series, we'll be using the **Embassy framework** in combination with **rmk** because:
+For this series, we'll be using the **Embassy framework** because:
 
 1. **Embassy** provides the underlying async framework and hardware abstraction
 2. **rmk** builds on Embassy to provide keyboard-specific functionality
-3. Together they offer a complete solution for modern keyboard firmware development
+3. **rmk** is a complex framework and it is easier to build a firmware from scratch with the **Embassy** framework alone
 
 ## Hardware Target: nRF52840 with Dactyl Manuform
 
@@ -123,7 +116,7 @@ We'll be using a Dactyl Manuform split keyboard, which offers:
 - **Ergonomic curved design**
 - **Split layout** for better ergonomics
 - **Customizable key placement**
-- **3D printed case**
+- **3D printed case**: checkout the [configurator](https://ryanis.cool/dactyl/#manuform)
 - **Perfect for wireless operation**
 
 ## Setting Up the rmk Project
@@ -171,10 +164,8 @@ In this series, we'll explore:
 
 ### Advanced Features
 - Custom key mapping and layers
-- Rotary encoder support
-- RGB lighting control
 - Split keyboard synchronization
-- Wireless protocols and security
+- Wireless protocols
 
 ## The Challenge: Development and Debugging
 
@@ -213,6 +204,7 @@ Here are some valuable resources for your journey:
 - [rmk Repository](https://github.com/HaoboGu/rmk) - Rust Mechanical Keyboard framework
 - [nRF52840 Reference Manual](https://infocenter.nordicsemi.com/topic/ps_nrf52840/keyfeatures_html5.html) - Official Nordic documentation
 - [Rust Embedded Book](https://docs.rust-embedded.org/book/) - General embedded Rust guide
+- [Firmware repository](https://github.com/gaarutyunov/dactyl-rs) - Repository with the final result. Posts will use branches with code for this stage.
 
 ## Conclusion
 

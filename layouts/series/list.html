@@ -1,198 +1,50 @@
 {{ define "main" }}
-<div class="series-page">
-  <h1>📚 Series: {{ .Title }}</h1>
-  
-  {{ with .Params.description }}
-    <p class="series-description">{{ . }}</p>
-  {{ end }}
-  
-  {{ $seriesPosts := .Data.Pages.ByParam "series_index" }}
-  {{ $totalPosts := len $seriesPosts }}
-  
-  <div class="series-meta">
-    <p>{{ $totalPosts }} {{ if eq $totalPosts 1 }}post{{ else }}posts{{ end }} in this series</p>
-  </div>
-  
-  {{ if gt $totalPosts 0 }}
-    <div class="series-posts">
-      <ol>
-        {{ range $seriesPosts }}
-          <li class="series-post-item">
-            <div class="series-post-header">
-              <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-              <div class="series-post-meta">
-                <time class="series-post-date">{{ .Date.Format "January 2, 2006" }}</time>
-                {{ if .Params.series_index }}
-                  <span class="series-post-index">Part {{ .Params.series_index }}</span>
-                {{ end }}
-              </div>
-            </div>
-            {{ if .Params.description }}
-              <p class="series-post-description">{{ .Params.description }}</p>
-            {{ end }}
-          </li>
-        {{ end }}
-      </ol>
+  {{ with .Content }}
+    <div class="index-content">
+      {{ . }}
     </div>
-  {{ else }}
-    <p>No posts found in this series.</p>
   {{ end }}
   
-  <div class="series-navigation">
-    <a href="{{ "/series/" | absLangURL }}">← Back to all series</a>
+  <div class="posts">
+    <h1>📚 Series: {{ .Title }}</h1>
+    
+    {{ $seriesPosts := .Data.Pages.ByParam "series_index" }}
+    {{ $totalPosts := len $seriesPosts }}
+    
+    {{ if gt $totalPosts 0 }}
+      {{ range $seriesPosts }}
+        <article class="post on-list">
+          <h2 class="post-title">
+            <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+          </h2>
+          <div class="post-meta">
+            {{- if .Date -}}
+              <time class="post-date">
+                {{ .Date.Format "January 2, 2006" }}
+              </time>
+            {{- end -}}
+            {{ if .Params.series_index }}
+              <span class="post-author">Part {{ .Params.series_index }}</span>
+            {{ end }}
+          </div>
+
+          <div class="post-content">
+            {{ if .Params.description }}
+              <p>{{ .Params.description | markdownify }}</p>
+            {{ else if .Description }}
+              <p>{{ .Description | markdownify }}</p>
+            {{ else }}
+              {{ .Summary }}
+            {{ end }}
+          </div>
+
+          <div>
+            <a class="read-more button inline" href="{{ .RelPermalink }}">[{{ $.Site.Params.ReadMore }}]</a>
+          </div>
+        </article>
+      {{ end }}
+    {{ else }}
+      <p>No posts found in this series.</p>
+    {{ end }}
   </div>
-</div>
-
-<style>
-.series-page {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.series-description {
-  font-size: 1.1rem;
-  color: #666;
-  margin: 1rem 0;
-  font-style: italic;
-}
-
-.series-meta {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 0.75rem;
-  margin: 1rem 0;
-}
-
-.series-meta p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.series-posts {
-  margin: 2rem 0;
-}
-
-.series-posts ol {
-  list-style: none;
-  padding: 0;
-  counter-reset: series-counter;
-}
-
-.series-post-item {
-  counter-increment: series-counter;
-  background: #fff;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  position: relative;
-}
-
-.series-post-item::before {
-  content: counter(series-counter);
-  position: absolute;
-  left: -15px;
-  top: -15px;
-  background: #007bff;
-  color: white;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.series-post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-}
-
-.series-post-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.series-post-header h3 a {
-  text-decoration: none;
-  color: #333;
-}
-
-.series-post-header h3 a:hover {
-  text-decoration: underline;
-}
-
-.series-post-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.series-post-date {
-  margin-bottom: 0.25rem;
-}
-
-.series-post-index {
-  background: #e9ecef;
-  border-radius: 12px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.series-post-description {
-  margin: 0.5rem 0 0 0;
-  color: #666;
-  font-size: 0.95rem;
-}
-
-.series-navigation {
-  margin: 2rem 0;
-  padding-top: 2rem;
-  border-top: 1px solid #e9ecef;
-  text-align: center;
-}
-
-.series-navigation a {
-  text-decoration: none;
-  color: #007bff;
-  font-weight: bold;
-}
-
-.series-navigation a:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-  .series-post-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .series-post-meta {
-    align-items: flex-start;
-    margin-top: 0.5rem;
-  }
-  
-  .series-post-item {
-    padding: 1rem;
-  }
-  
-  .series-post-item::before {
-    left: -10px;
-    top: -10px;
-    width: 25px;
-    height: 25px;
-    font-size: 0.8rem;
-  }
-}
-</style>
 {{ end }}
