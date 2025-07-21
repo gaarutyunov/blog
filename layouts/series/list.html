@@ -1,0 +1,50 @@
+{{ define "main" }}
+  {{ with .Content }}
+    <div class="index-content">
+      {{ . }}
+    </div>
+  {{ end }}
+  
+  <div class="posts">
+    <h1>📚 Series: {{ .Title }}</h1>
+    
+    {{ $seriesPosts := .Data.Pages.ByParam "series_index" }}
+    {{ $totalPosts := len $seriesPosts }}
+    
+    {{ if gt $totalPosts 0 }}
+      {{ range $seriesPosts }}
+        <article class="post on-list">
+          <h2 class="post-title">
+            <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+          </h2>
+          <div class="post-meta">
+            {{- if .Date -}}
+              <time class="post-date">
+                {{ .Date.Format "January 2, 2006" }}
+              </time>
+            {{- end -}}
+            {{ if .Params.series_index }}
+              <span class="post-author">Part {{ .Params.series_index }}</span>
+            {{ end }}
+          </div>
+
+          <div class="post-content">
+            {{ if .Params.description }}
+              <p>{{ .Params.description | markdownify }}</p>
+            {{ else if .Description }}
+              <p>{{ .Description | markdownify }}</p>
+            {{ else }}
+              {{ .Summary }}
+            {{ end }}
+          </div>
+
+          <div>
+            <a class="read-more button inline" href="{{ .RelPermalink }}">[{{ $.Site.Params.ReadMore }}]</a>
+          </div>
+        </article>
+      {{ end }}
+    {{ else }}
+      <p>No posts found in this series.</p>
+    {{ end }}
+  </div>
+{{ end }}

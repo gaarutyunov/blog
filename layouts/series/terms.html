@@ -1,0 +1,42 @@
+{{ define "main" }}
+<div class="posts">
+  <h1>📚 Blog Series</h1>
+  <p>Explore my collection of blog series on various topics.</p>
+  
+  {{ $seriesCount := len .Data.Terms }}
+  
+  {{ if gt $seriesCount 0 }}
+    {{ range .Data.Terms.ByCount.Reverse }}
+      {{ $seriesName := .Name }}
+      {{ $seriesPosts := .Pages.ByParam "series_index" }}
+      {{ $postCount := len $seriesPosts }}
+      {{ $latestPost := index $seriesPosts 0 }}
+      {{ $firstPost := index $seriesPosts (sub $postCount 1) }}
+      
+      <article class="post on-list">
+        <h2 class="post-title">
+          <a href="{{ .Page.Permalink }}">{{ $seriesName }}</a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-author">{{ $postCount }} {{ if eq $postCount 1 }}post{{ else }}posts{{ end }}</span>
+          {{ if $latestPost }}
+            <time class="post-date">Updated {{ $latestPost.Date.Format "January 2, 2006" }}</time>
+          {{ end }}
+        </div>
+
+        <div class="post-content">
+          {{ if $firstPost.Params.description }}
+            <p>{{ $firstPost.Params.description | markdownify }}</p>
+          {{ end }}
+        </div>
+
+        <div>
+          <a class="read-more button inline" href="{{ .Page.Permalink }}">[View Series]</a>
+        </div>
+      </article>
+    {{ end }}
+  {{ else }}
+    <p>No blog series found.</p>
+  {{ end }}
+</div>
+{{ end }}

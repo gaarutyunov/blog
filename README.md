@@ -1,175 +1,186 @@
-# Technical Blog
+# German Arutyunov's Blog
 
-A modern technical blog built with [Hugo](https://gohugo.io/) using the [Terminal theme](https://themes.gohugo.io/themes/hugo-theme-terminal/) and deployed on GitHub Pages.
+A technical blog built with Hugo, focusing on software development, technology insights, and programming experiences.
 
 ## 🚀 Live Site
 
-The blog is available at: [https://gaarutyunov.github.io/blog](https://gaarutyunov.github.io/blog)
+The blog is deployed at: **https://gaarutyunov.github.io/blog**
 
-## 🛠 Technology Stack
+## 🎨 Theme
 
-- **Static Site Generator**: Hugo
-- **Theme**: Terminal theme by [@panr](https://github.com/panr/hugo-theme-terminal)
-- **Hosting**: GitHub Pages
-- **Deployment**: GitHub Actions (automated)
-- **Styling**: Terminal-inspired design with orange color scheme
+This blog uses the **Terminal** theme for Hugo, which provides:
+- Clean, minimalist design with a terminal-inspired aesthetic
+- Orange color scheme
+- Responsive layout
+- Support for posts, series, and taxonomies
+- Reading time estimation
+- Table of contents support
 
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```
 blog/
-├── .github/workflows/     # GitHub Actions deployment workflow
-├── archetypes/           # Content templates
-├── content/              # Blog content
-│   ├── posts/           # Blog posts
-│   ├── about.md         # About page
-│   └── showcase.md      # Project showcase
-├── static/              # Static assets
-├── themes/              # Hugo themes (git submodule)
-├── hugo.toml           # Hugo configuration
-└── README.md           # This file
+├── hugo.toml              # Hugo configuration file
+├── content/               # All content files
+│   ├── about.md          # About page
+│   ├── showcase.md       # Showcase page
+│   └── posts/            # Blog posts directory
+│       ├── _index.md     # Posts section index
+│       └── *.md          # Individual blog posts
+├── layouts/              # Custom layout templates
+│   ├── _default/         # Default layouts
+│   ├── partials/         # Partial templates
+│   └── series/           # Series-specific layouts
+├── static/               # Static assets (images, files, etc.)
+├── themes/               # Hugo themes
+│   └── terminal/         # Terminal theme files
+└── archetypes/           # Content templates
+    └── default.md        # Default post archetype
 ```
 
-## 🏗 Setup and Development
+## 🛠️ Local Development
 
 ### Prerequisites
 
-- [Hugo Extended](https://gohugo.io/installation/) (v0.128.0 or later)
-- [Git](https://git-scm.com/)
-- [Go](https://golang.org/) (for Hugo modules, optional)
+- [Hugo](https://gohugo.io/installation/) (Extended version recommended)
+- Git
 
-### Local Development
+### Getting Started
 
-1. **Clone the repository**:
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/gaarutyunov/blog.git
    cd blog
    ```
 
-2. **Initialize the theme submodule**:
+2. **Initialize and update theme submodules** (if the theme is a git submodule):
    ```bash
    git submodule update --init --recursive
    ```
 
-3. **Start the development server**:
+3. **Start the development server:**
    ```bash
    hugo server -D
    ```
 
-4. **Open your browser** and navigate to `http://localhost:1313`
+4. **Open your browser:**
+   Navigate to `http://localhost:1313` to view the blog locally.
 
-### Creating New Content
+### Development Commands
 
-**Create a new blog post**:
-```bash
-hugo new posts/my-new-post.md
-```
+- **Start development server with drafts:**
+  ```bash
+  hugo server -D
+  ```
 
-**Create a new page**:
-```bash
-hugo new my-new-page.md
-```
+- **Build the site:**
+  ```bash
+  hugo
+  ```
 
-The archetype in `archetypes/default.md` provides a template with front matter for new content.
+- **Build for production:**
+  ```bash
+  hugo --environment production
+  ```
 
-## 📝 Content Management
+## ✍️ Writing Posts
 
-### Front Matter
+### Creating a New Post
 
-Each content file includes front matter with metadata:
+1. **Generate a new post:**
+   ```bash
+   hugo new posts/your-post-title.md
+   ```
+
+2. **Or manually create** a new markdown file in `content/posts/` with the following front matter:
 
 ```yaml
 ---
-title: "Post Title"
-date: 2025-06-29T22:45:00+00:00
+title: "Your Post Title"
+date: 2025-07-21T10:00:00+00:00
 author: "German Arutyunov"
-cover: ""
-tags: ["tag1", "tag2"]
-keywords: ["keyword1", "keyword2"]
-description: "Post description"
-showFullContent: false
-readingTime: true
-hideComments: false
-color: ""
-draft: false
+cover: ""                           # Optional: path to cover image
+tags: ["tag1", "tag2"]             # Optional: post tags
+categories: ["category"]            # Optional: post categories
+series: ["series-name"]            # Optional: part of a series
+keywords: ["keyword1", "keyword2"]  # Optional: SEO keywords
+description: "Brief description"    # Optional: meta description
+showFullContent: false             # Show full content on list pages
+readingTime: false                 # Show reading time estimate
+hideComments: false                # Hide comments section
+draft: false                       # Set to true for drafts
 ---
+
+Your post content goes here...
 ```
 
-### Publishing
+### Front Matter Options
 
-1. Remove `draft: true` from the front matter
-2. Commit and push to the `main` branch
-3. GitHub Actions will automatically build and deploy
+- **Required:**
+  - `title`: Post title
+  - `date`: Publication date in ISO format
 
-## 🎨 Theme Configuration
+- **Optional:**
+  - `author`: Author name (defaults to site config)
+  - `cover`: Path to cover image (relative to static folder)
+  - `tags`: Array of tags for categorization
+  - `categories`: Array of categories
+  - `series`: Array of series names this post belongs to
+  - `description`: SEO meta description
+  - `showFullContent`: Show full post content on listing pages
+  - `readingTime`: Display estimated reading time
+  - `draft`: Mark as draft (won't be published)
 
-The Terminal theme is configured in `hugo.toml` with:
+### Writing Tips
 
-- **Color Scheme**: Orange
-- **Menu Items**: About, Showcase
-- **Features**: Reading time, responsive design
-- **Social**: Twitter card support (configurable)
+1. **Use meaningful slugs:** Hugo automatically generates URLs from filenames
+2. **Add cover images:** Place images in `static/` folder and reference them in front matter
+3. **Use series:** Group related posts using the `series` front matter
+4. **SEO optimization:** Include relevant `keywords` and `description`
+5. **Drafts:** Use `draft: true` for work-in-progress posts
+
+### Content Organization
+
+- **Posts:** Regular blog posts go in `content/posts/`
+- **Pages:** Standalone pages go directly in `content/`
+- **Series:** Posts with the same series value are automatically grouped
+- **Tags & Categories:** Used for content discovery and navigation
 
 ## 🚀 Deployment
 
-Deployment is fully automated via GitHub Actions:
+This blog is deployed using GitHub Pages. The deployment process is automated through GitHub Actions.
 
-1. **Push to main branch** triggers the deployment workflow
-2. **Hugo builds** the site with minification
-3. **GitHub Pages** serves the generated static files
-4. **Live site** updates automatically
+### Deployment URL
+- **Production:** https://gaarutyunov.github.io/blog
 
 ### Manual Deployment
+If you need to deploy manually:
+1. Build the site: `hugo --environment production`
+2. The built site will be in the `public/` directory
+3. Deploy the contents of `public/` to your hosting provider
 
-To deploy manually:
+## 📝 Configuration
 
-```bash
-hugo --minify
-# Upload the /public directory to your hosting provider
-```
+The site configuration is managed in `hugo.toml`. Key settings include:
 
-## 📋 Available Commands
-
-```bash
-# Start development server
-hugo server -D
-
-# Build for production
-hugo --minify
-
-# Create new content
-hugo new posts/title.md
-
-# Update theme
-git submodule update --remote themes/terminal
-```
-
-## 🛡 GitHub Pages Configuration
-
-**Repository Settings**:
-1. Go to Settings → Pages
-2. Set Source to "GitHub Actions"
-3. The workflow will handle deployment automatically
+- **Base URL:** Site's production URL
+- **Theme:** Currently using "terminal"
+- **Menu items:** Navigation structure
+- **Content types:** Posts, series, categories, tags
+- **Theme customization:** Colors, layout options
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test locally with `hugo server -D`
-5. Submit a pull request
+This is a personal blog, but if you notice any issues or have suggestions:
+
+1. Open an issue on GitHub
+2. Submit a pull request
+3. Contact me directly
 
 ## 📄 License
 
-This project is open source. The Terminal theme is licensed under the MIT License.
-
-## 🔗 Links
-
-- [Hugo Documentation](https://gohugo.io/documentation/)
-- [Terminal Theme](https://github.com/panr/hugo-theme-terminal)
-- [GitHub Pages](https://pages.github.com/)
-- [Hugo Themes](https://themes.gohugo.io/)
+This project is licensed under the terms specified in the LICENSE file.
 
 ---
 
-Built with ❤️ using Hugo and the Terminal theme.
+**Happy blogging!** 🎉

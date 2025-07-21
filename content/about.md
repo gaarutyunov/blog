@@ -6,32 +6,49 @@ author: "German Arutyunov"
 
 # About Me
 
-Hi! I'm German Arutyunov, a software developer passionate about creating elegant solutions to complex problems.
+Hi! I'm German Arutyunov, a passionate software developer with expertise in building scalable applications and robust system architectures. I enjoy tackling complex technical challenges and creating elegant solutions that make a real impact.
 
 ## What I Do
 
-I focus on:
+I specialize in:
 
-- **Backend Development**: Building scalable and maintainable server-side applications
-- **System Architecture**: Designing robust and efficient software systems  
-- **DevOps & Infrastructure**: Automating deployments and managing cloud infrastructure
-- **Open Source**: Contributing to and maintaining open source projects
+- **Backend Development**: Building scalable and maintainable server-side applications using modern languages and frameworks
+- **System Architecture**: Designing robust, efficient, and scalable software systems
+- **DevOps & Infrastructure**: Automating deployments, CI/CD pipelines, and managing cloud infrastructure
+- **Open Source**: Contributing to and maintaining open source projects that benefit the developer community
+- **Technical Leadership**: Mentoring developers and driving technical decisions in collaborative environments
 
-## Technical Interests
+## Technical Expertise
 
-- Modern programming languages and frameworks
-- Cloud computing and microservices architecture
-- Development tools and automation
-- Software engineering best practices
-- Performance optimization and scalability
+My technical interests and experience span:
+
+- **Languages**: Rust, TypeScript/JavaScript, Python, Go, and more
+- **Frameworks & Technologies**: Modern web frameworks, microservices, containerization
+- **Cloud & Infrastructure**: AWS, Docker, Kubernetes, Infrastructure as Code
+- **Development Practices**: Test-driven development, code reviews, agile methodologies
+- **Emerging Technologies**: WebAssembly, embedded systems, performance optimization
 
 ## This Blog
 
-This technical blog serves as a platform to share knowledge, document learning experiences, and connect with the developer community. I believe in learning in public and helping others grow in their technical journey.
+This technical blog serves as a platform to share knowledge, document learning experiences, and connect with the developer community. Here you'll find:
 
-## Get in Touch
+- **Deep dives** into technical topics and emerging technologies
+- **Tutorials and guides** for setting up development environments
+- **Project showcases** and open source contributions
+- **Insights** from real-world software development experiences
 
-Feel free to reach out if you'd like to discuss technology, collaborate on projects, or just say hello!
+I believe in learning in public and helping others grow in their technical journey.
+
+## Connect With Me
+
+I'm always interested in connecting with fellow developers, discussing technology, and exploring collaboration opportunities.
+
+**Find me online:**
+- 🔗 **LinkedIn**: [linkedin.com/in/german-arutyunov](https://www.linkedin.com/in/german-arutyunov/)
+- 💻 **GitHub**: [github.com/gaarutyunov](https://github.com/gaarutyunov/)
+- 📧 **Email**: Feel free to reach out through LinkedIn
+
+Whether you want to discuss a technical challenge, collaborate on an open source project, or just say hello – I'd love to hear from you!
 
 ---
 

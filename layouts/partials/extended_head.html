@@ -1,0 +1,18 @@
+<!-- Custom CSS for homepage and header overrides -->
+{{ $customCSS := resources.Get "css/custom.css" }}
+{{ if $customCSS }}
+  {{ $customStyles := $customCSS | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $customStyles.Permalink }}">
+{{ end }}
+
+{{ $homepageCSS := resources.Get "css/homepage.css" }}
+{{ if $homepageCSS }}
+  {{ $homepageStyles := $homepageCSS | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $homepageStyles.Permalink }}">
+{{ end }}
+
+{{ $seriesCSS := resources.Get "css/series.css" }}
+{{ if $seriesCSS }}
+  {{ $seriesStyles := $seriesCSS | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $seriesStyles.Permalink }}">
+{{ end }}

@@ -1,0 +1,96 @@
+{{ define "main" }}
+<div class="homepage">
+  <!-- About Summary Section -->
+  <section class="about-summary">
+    <h2>👋 About Me</h2>
+    <p>Hi! I'm German Arutyunov, a passionate software developer with expertise in building scalable applications and robust system architectures. I specialize in backend development, system architecture, DevOps, and open source contributions.</p>
+    <p>This blog is where I share knowledge, document learning experiences, and connect with the developer community through deep technical dives and practical tutorials.</p>
+    <div>
+        <a class="read-more button inline" href="/blog/about/">[{{ $.Site.Params.ReadMore }}]</a>
+    </div>
+  </section>
+
+  <!-- Blog Series Section -->
+  <section class="series-section">
+    <div class="section-header">
+      <h2>📚 Blog Series</h2>
+      <a class="read-more button inline" href="/blog/series/">[View All]</a>
+    </div>
+    <p>Explore my collection of multi-part blog series on various topics:</p>
+    
+    {{ $seriesTerms := .Site.Taxonomies.series }}
+    {{ if $seriesTerms }}
+      <div class="series-list">
+        {{ range $seriesTerms.ByCount.Reverse }}
+          {{ $seriesName := .Name }}
+          {{ $seriesPosts := .Pages.ByParam "series_index" }}
+          {{ $postCount := len $seriesPosts }}
+          {{ $latestPost := index $seriesPosts 0 }}
+          {{ $firstPost := index $seriesPosts (sub $postCount 1) }}
+          
+          <div class="series-item">
+            <h3><a href="{{ .Page.Permalink }}">{{ $seriesName }}</a></h3>
+            <div class="series-meta">
+              <span class="series-count">{{ $postCount }} {{ if eq $postCount 1 }}post{{ else }}posts{{ end }}</span>
+              <span class="series-updated">Updated {{ $latestPost.Date.Format "Jan 2, 2006" }}</span>
+            </div>
+            {{ if $firstPost.Params.description }}
+              <p class="series-description">{{ $firstPost.Params.description | truncate 120 }}</p>
+            {{ end }}
+            <div>
+              <a class="read-more button inline" href="{{ .Page.Permalink }}">[{{ $.Site.Params.ReadMore }}]</a>
+            </div>
+          </div>
+        {{ end }}
+      </div>
+    {{ else }}
+      <p class="no-content">No blog series available yet. Check back soon!</p>
+    {{ end }}
+  </section>
+
+  <!-- Recent Posts Section -->
+  <section class="recent-posts">
+    <div class="section-header">
+      <h2>📝 Recent Posts</h2>
+      <a class="read-more button inline" href="/blog/posts/">[View All]</a>
+    </div>
+    <p>Latest articles and tutorials from the blog:</p>
+    
+    {{ $recentPosts := where .Site.RegularPages "Section" "posts" | first 6 }}
+    {{ if $recentPosts }}
+      <div class="posts">
+        {{ range $recentPosts }}
+          <article class="post on-list">
+            <h2 class="post-title">
+              <a href="{{ .Permalink }}">{{ .Title }}</a>
+            </h2>
+            <div class="post-meta">
+              <time class="post-date">{{ .Date.Format "Jan 2, 2006" }}</time>
+              <span class="post-author">{{ .Params.Author | default "German Arutyunov" }}</span>
+            </div>
+            {{ if .Params.tags }}
+              <span class="post-tags">
+                {{ range .Params.tags }}
+                #<a href="{{ (urlize (printf "tags/%s/" . )) | absLangURL }}">{{ . }}</a>&nbsp;
+                {{ end }}
+              </span>
+            {{ end }}
+            <div class="post-content">
+              {{ if .Params.description }}
+                <p>{{ .Params.description }}</p>
+              {{ else }}
+                {{ .Summary }}
+              {{ end }}
+            </div>
+            <div>
+              <a class="read-more button inline" href="{{ .Permalink }}">[Read more]</a>
+            </div>
+          </article>
+        {{ end }}
+      </div>
+    {{ else }}
+      <p class="no-content">No posts available yet. Check back soon!</p>
+    {{ end }}
+  </section>
+</div>
+{{ end }}

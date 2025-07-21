@@ -1,0 +1,257 @@
+.homepage {
+  width: 100%;
+}
+
+/* Section Styles */
+section {
+  margin-bottom: 4rem;
+  padding: 2rem 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.5rem;
+}
+
+.section-header h2 {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin-bottom: 0;
+  color: var(--foreground);
+  flex: 1;
+}
+
+section h2 {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+section p {
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* About Summary */
+.about-summary {
+  margin: 0;
+}
+
+/* Series Section */
+.series-section {
+  margin: 0;
+}
+
+.read-more-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.read-more-link:hover {
+  text-decoration: underline;
+}
+
+/* Series List - Homepage specific */
+.homepage .series-list {
+  margin: 0;
+}
+
+.series-item {
+  width: 100%;
+  text-align: left;
+  padding: 2rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.series-item:last-child {
+  border-bottom: none;
+}
+
+.series-item h3 {
+  position: relative;
+  color: var(--accent);
+  margin-top: 0 !important;
+  margin-bottom: 15px !important;
+  padding-bottom: 15px;
+  border-bottom: 3px dotted var(--accent);
+  text-decoration: none !important;
+}
+
+.series-item h3::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  display: block;
+  width: 100%;
+  border-bottom: 3px dotted var(--accent);
+}
+
+.series-item h3 a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.series-meta {
+  font-size: inherit;
+  margin-bottom: 10px;
+  color: color-mix(in srgb, var(--foreground) 65%, transparent);
+}
+
+.series-meta > *:not(:first-child)::before {
+  content: "::";
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.series-count {
+  color: var(--accent);
+}
+
+.series-updated {
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.series-description {
+  color: color-mix(in srgb, var(--foreground) 80%, transparent);
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+/* Recent Posts - use simple post styling from terminal theme */
+.recent-posts {
+  margin: 0;
+}
+
+.recent-posts .posts {
+  width: 100%;
+}
+
+.recent-posts .post {
+  width: 100%;
+  text-align: left;
+  padding: 2rem 0;
+}
+
+.recent-posts .post:not(:last-of-type) {
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.recent-posts .post-meta {
+  font-size: inherit;
+  margin-bottom: 10px;
+  color: color-mix(in srgb, var(--foreground) 65%, transparent);
+}
+
+.recent-posts .post-meta > *:not(:first-child)::before {
+  content: "::";
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.recent-posts .post-title {
+  position: relative;
+  color: var(--accent);
+  margin-top: 0 !important;
+  margin-bottom: 15px !important;
+  padding-bottom: 15px;
+  border-bottom: 3px dotted var(--accent);
+  text-decoration: none !important;
+}
+
+.recent-posts .post-title::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  display: block;
+  width: 100%;
+  border-bottom: 3px dotted var(--accent);
+}
+
+.recent-posts .post-title a {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.recent-posts .post-tags {
+  display: block;
+  margin-bottom: 20px;
+  font-size: inherit;
+  color: var(--accent);
+}
+
+.recent-posts .post-content {
+  margin-top: 25px;
+}
+
+.recent-posts .read-more {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.recent-posts .read-more:hover {
+  text-decoration: underline;
+}
+
+.no-content {
+  text-align: center;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  font-style: italic;
+  padding: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  section {
+    margin-bottom: 3rem;
+    padding: 1.5rem 0;
+  }
+  
+  .about-summary {
+    margin: 0;
+  }
+
+  .series-section {
+    margin: 0;
+  }
+
+  .recent-posts {
+    margin: 0;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+  }
+
+  .section-header h2 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 1rem 0;
+  }
+  
+  section h2 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Container centering fix */
+@media (min-width: 864px) {
+  body .container {
+    margin: 0 auto;
+  }
+}
