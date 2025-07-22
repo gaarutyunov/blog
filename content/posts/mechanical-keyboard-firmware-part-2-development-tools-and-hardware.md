@@ -18,9 +18,71 @@ Welcome back to our series on building mechanical keyboard firmware in Rust! In 
 
 ## The Complete Development Toolchain
 
-Modern embedded Rust development has evolved significantly, providing us with professional-grade tools that rival traditional embedded development environments. Let's explore each component of our toolchain and understand how they work together.
+Modern embedded Rust development has evolved significantly, providing us with professional-grade tools that rival traditional embedded development environments. Let's explore each component of our toolchain and understand how they work together with a practical example.
 
-### Build Automation with Cargo-Make
+## Practical Example: Blinky LED
+
+Let's examine how all these tools come together in a real keyboard firmware project. The **dactyl-rs** repository demonstrates best practices for wireless keyboard development.
+
+### nRFMicro: Purpose-Built Wireless Controller
+
+The **nRFMicro** represents the evolution of keyboard controllers, combining the nRF52840's powerful capabilities with the familiar Pro Micro form factor. 
+In this post we will be using the builtin blue LED pin to check that everything works correctly.
+
+### Understanding the need for UF2 Bootloader
+
+The **Adafruit nRF52 Bootloader** provides the foundation for easy firmware updates. 
+It can be used to easily flash the firmware if you don't have the debug probe.
+
+### Project Structure
+
+```
+dactyl-rs/
+├── Cargo.toml              # Dependencies and project configuration
+├── Makefile.toml          # Build automation with cargo-make
+├── memory.x               # Memory layout for bootloader compatibility
+├── src/
+│   └── main.rs           # Main application entry point
+├── .cargo/
+│   └── config.toml       # Target-specific build configuration
+└── .vscode/
+    ├── launch.json           # Main application entry point
+    └── tasks.json       # Debugging configuration
+```
+
+### Memory Layout Configuration
+
+The bootloader requires specific memory layout configuration in your firmware:
+
+```
+MEMORY
+{
+  /* NOTE 1 K = 1 KiB = 1024 bytes */
+  /* These values correspond to the nRF52840 WITH Adafruit nRF52 bootloader */
+  FLASH : ORIGIN = 0x00001000, LENGTH = 1020K
+  RAM : ORIGIN = 0x20000008, LENGTH = 255K
+
+  /* These values correspond to the nRF52840 */
+  /* FLASH : ORIGIN = 0x00000000, LENGTH = 1024K */
+  /* RAM : ORIGIN = 0x20000000, LENGTH = 256K */
+}
+```
+
+### Cargo Configuration
+
+```toml
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+runner = "probe-rs run --chip nRF52840_xxAA"
+linker = "flip-link"
+
+[build]
+target = "thumbv7em-none-eabihf"     # Cortex-M4F and Cortex-M7F (with FPU)
+
+[env]
+DEFMT_LOG = "debug"
+```
+
+### Build with Cargo-Make
 
 **cargo-make** is a powerful task runner that extends Cargo's capabilities with complex build workflows. For embedded development, where we need to compile, convert formats, and deploy firmware, cargo-make becomes essential.
 
@@ -30,53 +92,54 @@ Modern embedded Rust development has evolved significantly, providing us with pr
 default_to_workspace = false
 
 [env]
-CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+[tasks.install-llvm-tools]
+install_crate = { rustup_component_name = "llvm-tools" }
 
-[tasks.install-tools]
-description = "Install required embedded development tools"
-script = [
-    "rustup target add thumbv7em-none-eabihf",
-    "cargo install probe-rs-tools",
-    "cargo install cargo-binutils",
-    "cargo install hex-to-uf2"
-]
-
-[tasks.build-release]
-description = "Build firmware in release mode"
-command = "cargo"
-args = ["build", "--release", "--bin", "firmware"]
+[tasks.flip-link]
+install_crate = { crate_name = "flip-link", binary = "flip-link", test_arg = ["-h"] }
 
 [tasks.objcopy]
-description = "Convert ELF to Intel HEX format"
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
 command = "cargo"
-args = ["objcopy", "--release", "--bin", "firmware", "--", "-O", "ihex", "firmware.hex"]
-dependencies = ["build-release"]
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "dactyl-rs",
+    "--",
+    "-O",
+    "ihex",
+    "dactyl-rs.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
 
 [tasks.uf2]
-description = "Convert HEX to UF2 for drag-and-drop flashing"
-command = "hex-to-uf2"
-args = ["--input-path", "target/thumbv7em-none-eabihf/release/firmware.hex", 
-        "--output-path", "firmware.uf2", "--family", "nrf52840"]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "dactyl-rs.hex",
+    "--output-path",
+    "dactyl-rs.uf2",
+    "--family",
+    "nrf52840",
+]
 dependencies = ["objcopy"]
-
-[tasks.flash]
-description = "Flash firmware using probe-rs"
-command = "probe-rs"
-args = ["run", "--chip", "nRF52840_xxAA", "target/thumbv7em-none-eabihf/release/firmware"]
-dependencies = ["build-release"]
-
-[tasks.deploy]
-description = "Complete build and deploy workflow"
-dependencies = ["uf2"]
 ```
 
 This configuration automates our entire build process:
 1. **Tool Installation**: Ensures all required tools are available
-2. **Compilation**: Builds the firmware for our ARM Cortex-M4 target
-3. **Format Conversion**: Converts from ELF to HEX to UF2 formats
-4. **Deployment**: Provides both probe-based flashing and drag-and-drop options
+2. **Compilation**: Builds the firmware for our ARM Cortex-M4 target in HEX format
+3. **Format Conversion**: Converts from HEX to UF2 formats
 
-### From HEX to UF2: Universal Firmware Format
+#### From HEX to UF2
 
 The **UF2 (USB Flashing Format)** represents a significant advancement in embedded firmware deployment. Instead of requiring specialized programming software, users can simply drag and drop firmware files onto a USB drive.
 
@@ -102,7 +165,136 @@ The magic happens in the UF2 format structure:
 - **Bootloader-friendly**: Designed for simple implementation in bootloaders
 - **Error-resistant**: Built-in checksums and validation
 
-## Professional Debugging with Probe-RS
+### Key Dependencies
+
+```toml
+[dependencies]
+nrf-sdc = { version = "0.1.0", default-features = false, features = [
+    "defmt",
+    "peripheral",
+    "central",
+    "nrf52840",
+] }
+nrf-mpsl = { version = "0.1.0", default-features = false, features = [
+    "defmt",
+    "critical-section-impl",
+    "nrf52840",
+] }
+bt-hci = { version = "0.3", default-features = false, features = ["defmt"] }
+
+cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7.5"
+
+embassy-futures = { version = "0.1.0" }
+embassy-time = { version = "0.4", features = ["tick-hz-32_768", "defmt", "defmt-timestamp-uptime"] }
+embassy-nrf = { version = "0.3.1", features = [
+    "defmt",
+    "nrf52840",
+    "time-driver-rtc1",
+    "gpiote",
+    "unstable-pac",
+    "nfc-pins-as-gpio",
+    "time",
+] }
+embassy-executor = { version = "0.7", features = [
+    "defmt",
+    "arch-cortex-m",
+    "executor-thread",
+] }
+embassy-usb = { version = "0.4", features = ["defmt"] }
+embassy-sync = { version = "0.7.0", features = ["defmt"] }
+
+defmt = "1.0"
+defmt-rtt = "1.0"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
+static_cell = "2"
+
+rand = { version = "0.8.4", default-features = false }
+rand_core = { version = "0.6" }
+rand_chacha = { version = "0.3", default-features = false }
+usbd-hid = {version = "0.8.1", default-features = false, features = [
+    "defmt",
+] }
+
+[patch.crates-io]
+embassy-sync = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-futures = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-executor = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-nrf = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-time = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-usb = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+embassy-embedded-hal = { git = "https://github.com/embassy-rs/embassy.git", rev = "f35aa4005a63e8d478b2b95aaa2bfb316b72dece" }
+nrf-sdc = { git = "https://github.com/alexmoon/nrf-sdc.git", rev = "7be9b853e15ca0404d65c623d1ec5795fd96c204" }
+nrf-mpsl = { git = "https://github.com/alexmoon/nrf-sdc.git", rev = "7be9b853e15ca0404d65c623d1ec5795fd96c204" }
+bt-hci = { git = "https://github.com/embassy-rs/bt-hci", rev = "50c443e088ab9c405e44a10e98915b445ed7b750" }
+
+[build-dependencies]
+xz2 = "0.1.7"
+json = "0.12"
+const-gen = "1.6"
+
+[profile.dev]
+codegen-units = 1      # better optimizations
+debug = true
+opt-level = 1
+overflow-checks = true
+lto = false
+panic = 'unwind'
+
+[profile.release]
+codegen-units = 1       # better optimizations
+debug = true            # no overhead for bare-metal
+opt-level = "z"         # optimize for binary size
+overflow-checks = false
+lto = "fat"
+```
+
+### Implementation from Embassy examples
+
+To verify that everything works correctly we can just use the basic [example](https://github.com/embassy-rs/embassy/blob/main/examples/nrf52840/src/bin/blinky.rs) from embassy repository that turns the integrated LED on and off. The only difference is the pin number used for the [nRFMicro](https://github.com/joric/nrfmicro/wiki/Pinout) board.
+
+```rust
+#![no_std]
+#![no_main]
+
+use embassy_executor::Spawner;
+use embassy_nrf::gpio::{Level, Output, OutputDrive};
+use embassy_time::Timer;
+use {defmt_rtt as _, panic_probe as _};
+
+#[embassy_executor::main]
+async fn main(_spawner: Spawner) {
+    let p = embassy_nrf::init(Default::default());
+    // Change the pin number for your board
+    let mut led = Output::new(p.P1_10, Level::Low, OutputDrive::Standard);
+
+    loop {
+        led.set_high();
+        Timer::after_millis(300).await;
+        led.set_low();
+        Timer::after_millis(300).await;
+    }
+}
+```
+
+### Build and flash
+
+The build is run by the following command which results in a .uf2 file with firmware in the target folder.
+
+```bash
+# Using cargo-make for complete build workflow
+cargo make uf2             # Convert to UF2 format
+```
+
+The resulting UF2 can be directly flashed to the device using the bootloader.
+
+The LED should turn on and off with 300 millliseconds interval. You can change the interval to verify that your code has been flashed correctly.
+
+Don't forget to enter the boot mode to be able to flash the firmware!
+
+## Debugging with Probe-RS
+
+Building and flashing the UF2 may be convenient if you know that the code will work. However, when exploring new technologies it is rarely the case. You may want to debug your code. However, it is not as simple as just launching a debugger inside your favorite IDE. **probe-rs** to the rescue!
 
 **probe-rs** has revolutionized embedded Rust debugging by providing a modern, pure-Rust alternative to proprietary debugging tools. It supports multiple probe types and offers features that rival expensive commercial solutions.
 
@@ -115,23 +307,7 @@ The magic happens in the UF2 format structure:
 
 ### RTT: Game-Changing Debug Output
 
-RTT (Real-Time Transfer) provides bidirectional communication between your firmware and host computer with minimal overhead:
-
-```rust
-// firmware/src/main.rs - RTT logging setup
-use defmt_rtt as _; // global logger
-use panic_probe as _; // panic handler
-
-#[defmt::info]
-fn log_key_press(key: u8, row: u8, col: u8) {
-    defmt::info!("Key pressed: {} at position ({}, {})", key, row, col);
-}
-
-#[defmt::warn] 
-fn log_battery_low(voltage: f32) {
-    defmt::warn!("Battery voltage low: {:.2}V", voltage);
-}
-```
+RTT (Real-Time Transfer) provides bidirectional communication between your firmware and host computer with minimal overhead.
 
 RTT provides several advantages over traditional UART debugging:
 - **No GPIO pins required**: Uses debug interface
@@ -149,15 +325,12 @@ cargo install probe-rs-tools
 probe-rs list
 
 # Flash firmware
-probe-rs run --chip nRF52840_xxAA firmware.elf
-
-# Monitor RTT output
-probe-rs rtt --chip nRF52840_xxAA
+probe-rs run --chip nRF52840_xxAA target/thumbv7em-none-eabihf/debug/dactyl-rs
 ```
 
 ## Visual Studio Code Integration
 
-The **probe-rs VS Code extension** brings desktop-class debugging to embedded development. This integration provides:
+As of time of writing, Jetbrains IDEs [don't have](https://youtrack.jetbrains.com/issue/RUST-12476/Feature-request-add-support-probe-rs-debugging-toolkit) support for DAP protocol. However, the **probe-rs VS Code extension** brings desktop-class debugging to embedded development. This integration provides:
 
 ### Features
 - **Native debugging interface** with breakpoints and variable inspection
@@ -176,18 +349,30 @@ Create `.vscode/launch.json` for your project:
         {
             "type": "probe-rs-debug",
             "request": "launch",
-            "name": "Debug nRF52840 Keyboard",
+            "name": "probe-rs main",
+            "cwd": "${workspaceFolder}",
+            "connectUnderReset": false,
             "chip": "nRF52840_xxAA",
-            "program": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/firmware",
-            "svdFile": "${workspaceFolder}/nrf52840.svd",
-            "rttEnabled": true,
-            "rttChannelFormats": [
+            "flashingConfig": {
+                "flashingEnabled": true,
+                "haltAfterReset": true
+            },
+            "coreConfigs": [
                 {
-                    "channelNumber": 0,
-                    "dataFormat": "Defmt",
-                    "showTimestamps": true
+                    "coreIndex": 0,
+                    "programBinary": "./target/thumbv7em-none-eabihf/debug/${workspaceFolderBasename}",
+                    "rttEnabled": true,
+                    "rttChannelFormats": [
+                        {
+                            "channelNumber": 0,
+                            "dataFormat": "Defmt",
+                            "showTimestamps": true,
+                            "showLocation": true
+                        }
+                    ]
                 }
-            ]
+            ],
+            "consoleLogLevel": "Info"
         }
     ]
 }
@@ -196,7 +381,6 @@ Create `.vscode/launch.json` for your project:
 This configuration enables:
 - **Full debugging support** with breakpoints and stepping
 - **RTT integration** with defmt formatting
-- **SVD file support** for peripheral register viewing
 - **Timestamps** for performance analysis
 
 ## The Raspberry Pi Debug Probe
@@ -214,233 +398,25 @@ The **Raspberry Pi Debug Probe** democratizes access to professional embedded de
 - **Connector**: 3-pin JST-SH for SWD connection
 - **UART**: Separate 3-pin JST-SH for serial communication
 - **LEDs**: Status indicators for power and debug activity
-- **USB-C**: Host connection with integrated USB hub functionality
+- **Micro-USB**: Host connection with integrated USB hub functionality
 
 ### Connection Example
 
 ```
-Debug Probe          nRFMicro
------------          --------
-SWDIO    ----------- SWDIO (P0.18)
-SWCLK    ----------- SWCLK (P0.16)  
-GND      ----------- GND
-3V3      ----------- VCC (optional)
+Debug Probe      nRFMicro
+-----------      --------
+    SWD ----------- SWD
+    SWC ----------- SWC 
+    GND ----------- GND
 ```
-
-## nRFMicro: Purpose-Built Wireless Controller
-
-The **nRFMicro** represents the evolution of keyboard controllers, combining the nRF52840's powerful capabilities with the familiar Pro Micro form factor. Let's explore its pinout and capabilities in detail.
-
-### nRFMicro Pinout Reference
-
-| Pin | nRF52840 GPIO | Function | Description |
-|-----|--------------|----------|-------------|
-| RAW | - | Power Input | Battery/USB power input |
-| GND | - | Ground | Ground connection |
-| RST | P0.18 | Reset | Reset pin (active low) |
-| VCC | - | 3.3V Output | Regulated 3.3V output |
-| P0.02 | P0.02 | GPIO/AIN0 | Analog input capable |
-| P0.29 | P0.29 | GPIO/AIN5 | Analog input capable |
-| P0.03 | P0.03 | GPIO/AIN1 | Analog input capable |
-| P0.28 | P0.28 | GPIO/AIN4 | Analog input capable |
-| P0.04 | P0.04 | GPIO/AIN2 | Analog input capable |
-| P0.05 | P0.05 | GPIO/AIN3 | Analog input capable |
-| P0.30 | P0.30 | GPIO/AIN6 | Analog input capable |
-| P0.06 | P0.06 | GPIO | General purpose I/O |
-| P0.08 | P0.08 | GPIO | General purpose I/O |
-| P0.17 | P0.17 | GPIO | General purpose I/O |
-| P0.20 | P0.20 | GPIO | General purpose I/O |
-| P0.13 | P0.13 | GPIO | General purpose I/O |
-| P0.24 | P0.24 | GPIO | General purpose I/O |
-| P0.09 | P0.09 | GPIO/NFC1 | Can be configured as GPIO |
-| P0.10 | P0.10 | GPIO/NFC2 | Can be configured as GPIO |
-| P1.06 | P1.06 | GPIO | General purpose I/O |
-| P1.04 | P1.04 | GPIO | General purpose I/O |
-| P0.11 | P0.11 | GPIO | General purpose I/O |
-| P1.00 | P1.00 | GPIO | General purpose I/O |
-| P0.12 | P0.12 | GPIO | General purpose I/O |
-| P0.07 | P0.07 | GPIO | General purpose I/O |
-
-### Special Function Pins
-
-The nRF52840 provides additional functionality on specific pins:
-
-```rust
-// Example pin configuration for keyboard matrix
-use embassy_nrf::gpio::{Level, Output, OutputDrive, Input, Pull};
-
-// Configure row pins as outputs (driving)
-let row_pins = [
-    Output::new(p0_02, Level::Low, OutputDrive::Standard),
-    Output::new(p0_03, Level::Low, OutputDrive::Standard),
-    Output::new(p0_04, Level::Low, OutputDrive::Standard),
-    Output::new(p0_05, Level::Low, OutputDrive::Standard),
-];
-
-// Configure column pins as inputs with pull-up resistors
-let col_pins = [
-    Input::new(p0_06, Pull::Up),
-    Input::new(p0_08, Pull::Up),  
-    Input::new(p0_17, Pull::Up),
-    Input::new(p0_20, Pull::Up),
-    Input::new(p0_13, Pull::Up),
-    Input::new(p0_24, Pull::Up),
-];
-```
-
-## Understanding the UF2 Bootloader
-
-The **Adafruit nRF52 Bootloader** provides the foundation for easy firmware updates. Understanding its operation modes and capabilities is crucial for keyboard development.
-
-### Bootloader Entry Modes
-
-The bootloader supports multiple entry methods for different scenarios:
-
-1. **Double Reset Button** (DFU with UF2 - nRF52840 only):
-   - Press reset button twice quickly
-   - Enters DFU mode with USB Mass Storage support
-   - Drag and drop UF2 files for flashing
-
-2. **Pin Combination** (DFU=LOW, FRST=HIGH):
-   - Bootloader mode with UF2 and CDC support
-   - Useful for automated testing and development
-
-3. **OTA Mode** (DFU=LOW, FRST=LOW):
-   - Over-the-air update capability
-   - Bluetooth-based firmware updates
-
-4. **Application Mode** (DFU=HIGH, FRST=HIGH):
-   - Normal application execution
-   - Falls back to DFU if no valid application
-
-### Memory Layout Configuration
-
-The bootloader requires specific memory layout configuration in your firmware:
-
-```rust
-// memory.x - Memory layout for Adafruit bootloader compatibility
-MEMORY
-{
-  /* NOTE 1 K = 1 KiBi = 1024 bytes */
-  /* Bootloader occupies first 48KB */
-  FLASH : ORIGIN = 0x00000000 + 48K, LENGTH = 1024K - 48K
-  RAM : ORIGIN = 0x20000000, LENGTH = 256K
-}
-```
-
-### Cargo Configuration
-
-```toml
-# .cargo/config.toml - Target configuration
-[build]
-target = "thumbv7em-none-eabihf"
-
-[target.thumbv7em-none-eabihf]
-rustflags = [
-  "-C", "linker=flip-link",
-  "-C", "link-arg=-Tlink.x",
-  "-C", "link-arg=-Tdefmt.x",
-]
-```
-
-## Practical Example: The Dactyl-RS Implementation
-
-Let's examine how all these tools come together in a real keyboard firmware project. The **dactyl-rs** repository demonstrates best practices for wireless keyboard development.
-
-### Project Structure
-
-```
-dactyl-rs/
-├── Cargo.toml              # Dependencies and project configuration
-├── Makefile.toml          # Build automation with cargo-make
-├── memory.x               # Memory layout for bootloader compatibility
-├── src/
-│   ├── main.rs           # Main application entry point
-│   ├── keyboard.rs       # Keyboard matrix and HID implementation
-│   ├── bluetooth.rs      # BLE stack integration
-│   └── battery.rs        # Power management
-├── .cargo/
-│   └── config.toml       # Target-specific build configuration
-└── .vscode/
-    └── launch.json       # Debugging configuration
-```
-
-### Key Dependencies
-
-```toml
-# Cargo.toml - Essential dependencies for wireless keyboard
-[dependencies]
-embassy-executor = { version = "0.6.3", features = ["defmt", "integrated-timers"] }
-embassy-nrf = { version = "0.3.1", features = [
-    "nrf52840", "time-driver-rtc1", "gpiote", 
-    "unstable-pac", "nfc-pins-as-gpio", "time"
-] }
-embassy-usb = { version = "0.3.0", features = ["defmt"] }
-embassy-futures = "0.1.1"
-
-# BLE stack
-nrf-sdc = { version = "0.1.0", features = [
-    "defmt", "peripheral", "central", "nrf52840"
-] }
-bt-hci = { version = "0.1.0", features = ["defmt"] }
-
-# Logging and debugging
-defmt = "0.3.8"
-defmt-rtt = "0.4.1"
-panic-probe = "0.3.2"
-
-# Utilities
-heapless = "0.8.0"
-nb = "1.1.0"
-```
-
-### Build Automation
-
-The build process demonstrates the complete toolchain integration:
-
-```bash
-# Using cargo-make for complete build workflow
-cargo make install-tools    # Install required tools
-cargo make build-release    # Compile firmware
-cargo make uf2             # Convert to UF2 format
-cargo make flash           # Flash via probe-rs (development)
-```
-
-## Development Workflow Integration
-
-Here's how all these tools integrate into a efficient development workflow:
-
-### 1. Development Phase
-- **VS Code** with probe-rs extension for coding and debugging
-- **RTT logging** for real-time diagnostics
-- **Breakpoint debugging** for complex logic issues
-
-### 2. Build Phase  
-- **cargo-make** automates the entire build process
-- **Automatic tool installation** ensures consistency
-- **Multi-format output** (ELF, HEX, UF2) for different deployment needs
-
-### 3. Testing Phase
-- **Debug probe** enables hardware-in-the-loop testing
-- **RTT output** provides detailed execution logging  
-- **GDB integration** for advanced debugging scenarios
-
-### 4. Deployment Phase
-- **UF2 format** for end-user firmware updates
-- **Drag-and-drop flashing** eliminates software dependencies
-- **Bootloader integration** ensures reliable updates
 
 ## Coming Up Next
 
 In our next post, we'll put all these tools to work as we:
 
-1. **Implement the keyboard matrix scanning** with Embassy async tasks
-2. **Set up USB HID communication** for wired operation  
-3. **Integrate BLE functionality** for wireless operation
-4. **Create a complete key mapping system** with layers and modifiers
-5. **Add battery monitoring** and power management features
-
-We'll also explore advanced debugging techniques and performance optimization strategies for wireless keyboards.
+1. Implement the keyboard matrix scanning
+2. Set up USB HID communication for wired operation
+3. Add some basic layout
 
 ## Resources and References
 
@@ -452,7 +428,7 @@ We'll also explore advanced debugging techniques and performance optimization st
 - [nRFMicro Wiki](https://github.com/joric/nrfmicro/wiki) - Hardware documentation and pinout
 - [Adafruit nRF52 Bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader) - UF2 bootloader implementation
 - [Embassy Framework](https://embassy.dev/book/) - Async embedded development
-- [Dactyl-RS Repository](https://github.com/gaarutyunov/dactyl-rs) - Reference implementation
+- [Dactyl-RS Repository](https://github.com/gaarutyunov/dactyl-rs/tree/blinky) - Reference implementation
 
 ## Conclusion
 
