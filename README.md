@@ -11,10 +11,7 @@ The blog is deployed at: **https://gaarutyunov.github.io/blog**
 This blog features in-depth series that explore complex technical topics across multiple posts:
 
 ### Building Mechanical Keyboard Firmware in Rust
-An ongoing comprehensive series covering the development of custom mechanical keyboard firmware using modern Rust tools and frameworks:
-
-- **Part 1**: [Setting Up Mechanical Keyboard Firmware Development in Rust](/posts/mechanical-keyboard-firmware-part-1-setup) - Development environment setup, framework selection, and hardware overview
-- **Part 2**: [Development Tools and Hardware Deep Dive](/posts/mechanical-keyboard-firmware-part-2-development-tools-and-hardware) - Complete toolchain exploration, debugging setup, and practical examples
+An ongoing comprehensive series covering the development of custom mechanical keyboard firmware using modern Rust tools and frameworks.
 
 **Topics covered**: Embassy async framework, nRF52840 microcontroller, wireless keyboards, debugging with probe-rs, UF2 bootloaders, and professional embedded development workflows.
 
@@ -33,16 +30,19 @@ This blog uses the **Terminal** theme for Hugo, which provides:
 ```
 blog/
 ├── hugo.toml              # Hugo configuration file
+├── LICENSE                # License file
+├── assets/                # Asset processing files
+│   └── css/              # Custom CSS files
 ├── content/               # All content files
 │   ├── about.md          # About page
-│   ├── showcase.md       # Showcase page
 │   └── posts/            # Blog posts directory
 │       ├── _index.md     # Posts section index
 │       └── *.md          # Individual blog posts
 ├── layouts/              # Custom layout templates
 │   ├── _default/         # Default layouts
 │   ├── partials/         # Partial templates
-│   └── series/           # Series-specific layouts
+│   ├── series/           # Series-specific layouts
+│   └── index.html        # Homepage layout
 ├── static/               # Static assets (images, files, etc.)
 ├── themes/               # Hugo themes
 │   └── terminal/         # Terminal theme files
