@@ -16,3 +16,8 @@
   {{ $seriesStyles := $seriesCSS | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $seriesStyles.Permalink }}">
 {{ end }}
+
+<!-- Math support -->
+{{ if .Param "math" }}
+  {{ partialCached "math.html" . }}
+{{ end }}
