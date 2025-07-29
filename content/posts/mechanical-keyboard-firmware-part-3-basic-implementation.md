@@ -43,25 +43,24 @@ The heart of any keyboard firmware is the matrix scanning algorithm. This techni
 Matrix scanning works by activating columns one at a time and reading all rows to detect key presses. Here's the step-by-step process:
 
 $$
-\begin{algorithm}
-\caption{Matrix Scanning Algorithm}
-\begin{algorithmic}
-\FOR{each column $c$ in columns}
-    \STATE Set column $c$ to HIGH
-    \STATE Wait for voltage stabilization (10μs)
-    \FOR{each row $r$ in rows}
-        \IF{row $r$ is HIGH}
-            \STATE Key at position $(r, c)$ is pressed
-            \IF{key state changed since last scan}
-                \STATE Generate key event
-            \ENDIF
-        \ENDIF
-    \ENDFOR
-    \STATE Set column $c$ to LOW
-\ENDFOR
-\STATE Wait scan interval (10ms)
-\end{algorithmic}
-\end{algorithm}
+\begin{array}{l}
+\textbf{Algorithm: Matrix Scanning} \\
+\hline \\
+\textbf{for } \text{each column } c \text{ in columns} \textbf{ do} \\
+\quad \text{Set column } c \text{ to HIGH} \\
+\quad \text{Wait for voltage stabilization (10μs)} \\
+\quad \textbf{for } \text{each row } r \text{ in rows} \textbf{ do} \\
+\quad \quad \textbf{if } \text{row } r \text{ is HIGH} \textbf{ then} \\
+\quad \quad \quad \text{Key at position } (r, c) \text{ is pressed} \\
+\quad \quad \quad \textbf{if } \text{key state changed since last scan} \textbf{ then} \\
+\quad \quad \quad \quad \text{Generate key event} \\
+\quad \quad \quad \textbf{end if} \\
+\quad \quad \textbf{end if} \\
+\quad \textbf{end for} \\
+\quad \text{Set column } c \text{ to LOW} \\
+\textbf{end for} \\
+\text{Wait scan interval (10ms)}
+\end{array}
 $$
 
 ### Example Key Matrix Layout
@@ -81,41 +80,64 @@ When column 2 is set HIGH and row 1 reads HIGH, we know the 'D' key is pressed.
 The matrix scanning implementation in [`src/matrix.rs`](https://github.com/gaarutyunov/dactyl-rs/blob/basic-layout/src/matrix.rs) demonstrates how this algorithm translates to embedded Rust:
 
 ```rust
+use defmt::info;
+use embassy_nrf::gpio::{Input, Output};
+use embassy_time::Timer;
+
+use crate::{keycodes::KeyCode, layout::Layout};
+
 pub struct Matrix<'a, const N_COLS: usize, const N_ROWS: usize> {
-    cols: [Output<'a>; N_COLS],        // Column pins as outputs
-    rows: [Input<'a>; N_ROWS],         // Row pins as inputs  
-    previous_state: [[bool; N_COLS]; N_ROWS], // State tracking for debouncing
+    cols: [Output<'a>; N_COLS],
+    rows: [Input<'a>; N_ROWS],
+    previous_state: [[bool; N_COLS]; N_ROWS],
 }
 
 impl<'a, const N_COLS: usize, const N_ROWS: usize> Matrix<'a, N_COLS, N_ROWS> {
-    pub async fn scan_keys(&mut self) -> Option<(usize, usize)> {
-        for col in 0..N_COLS {
-            // Step 1: Activate column
-            self.cols[col].set_high();
-            
-            // Step 2: Allow voltage to stabilize
-            Timer::after_micros(10).await;
-            
-            // Step 3: Read all rows
-            for row in 0..N_ROWS {
-                let current_state = self.rows[row].is_high();
-                let previous_state = self.previous_state[row][col];
-                
-                // Step 4: Detect new key press (edge detection)
-                if current_state && !previous_state {
-                    self.previous_state[row][col] = current_state;
-                    self.cols[col].set_low();
-                    return Some((row, col));
-                }
-                
-                self.previous_state[row][col] = current_state;
-            }
-            
-            // Step 5: Deactivate column
-            self.cols[col].set_low();
+    pub fn new(cols: [Output<'a>; N_COLS], rows: [Input<'a>; N_ROWS]) -> Self {
+        Self {
+            cols,
+            rows,
+            previous_state: [[false; N_COLS]; N_ROWS],
         }
-        
-        None
+    }
+
+    pub async fn scan_keys<F>(&mut self, layout: &Layout<N_COLS, N_ROWS>, mut on_key_press: F)
+    where
+        F: FnMut(KeyCode),
+    {
+        for (i, col) in self.cols.iter_mut().enumerate() {
+            col.set_high();
+            // Small delay to allow voltage to stabilize
+            Timer::after_micros(10).await;
+
+            for (j, row) in self.rows.iter().enumerate() {
+                let is_pressed = row.is_high();
+                let was_pressed = self
+                    .previous_state
+                    .get(j)
+                    .and_then(|row| row.get(i))
+                    .copied()
+                    .unwrap_or(false);
+
+                // Only trigger on key press (not release or held)
+                if is_pressed && !was_pressed && j < layout.len() && i < layout[j].len() {
+                    let keycode = layout[j][i];
+                    info!("Key pressed at ({}, {}): {:?}", j, i, keycode);
+                    on_key_press(keycode);
+                }
+
+                // Update the previous state
+                if let Some(row_state) = self.previous_state.get_mut(j) {
+                    if let Some(cell) = row_state.get_mut(i) {
+                        *cell = is_pressed;
+                    }
+                }
+            }
+            col.set_low();
+        }
+
+        // Scan interval - adjust this for responsiveness vs power consumption
+        Timer::after_millis(10).await;
     }
 }
 ```
@@ -298,7 +320,7 @@ if USB_CONFIGURED.load(Ordering::Relaxed) {
 
 ### Task Structure
 
-Both left and right keyboard implementations use the same four-task architecture:
+Both left and right keyboard implementations uses four futures:
 
 1. **USB Task**: Handles enumeration and power management
 2. **Matrix Scanner**: Continuously scans for key presses  
@@ -312,10 +334,7 @@ async fn main(spawner: Spawner) {
     let p = embassy_nrf::init(Default::default());
     
     // Spawn concurrent tasks
-    spawner.spawn(usb_task(/* ... */)).unwrap();
-    spawner.spawn(matrix_task(/* ... */)).unwrap(); 
-    spawner.spawn(keyboard_task(/* ... */)).unwrap();
-    spawner.spawn(usb_reader_task(/* ... */)).unwrap();
+    join4(usb_fut, in_fut, keyboard_fut, out_fut).await;
 }
 ```
 
