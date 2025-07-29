@@ -83,6 +83,15 @@ To make starting new AVR projects easier, there's an excellent template availabl
 
 Using this template is straightforward and provides a solid foundation for any AVR project in Rust.
 
+## Development Environment Setup
+
+1. **Rust installed** with `rustup`
+2. **AVR target added**: `rustup target add avr-none`
+3. **avr-gcc toolchain** installed for your platform
+4. **ravedude** installed: `cargo install ravedude`
+5. **cargo-generate** installed: `cargo install cargo-generate`
+6. **Create project** with the template `cargo generate --git https://github.com/Rahix/avr-hal-template.git`
+
 ## Our First Example: Blinky LED
 
 As with any embedded development series, we'll start with the classic "blinky" example - making an LED flash on and off. This simple program teaches fundamental concepts:
@@ -136,15 +145,6 @@ In our next post, we'll dive into the heart of our plant watering system by impl
 4. **Data filtering and processing** for reliable readings
 
 We'll be following the excellent guide from [Last Minute Engineers on capacitive soil moisture sensors](https://lastminuteengineers.com/capacitive-soil-moisture-sensor-arduino/) to understand the sensor principles and integration techniques.
-
-## Development Environment Setup
-
-Before our next post, make sure you have:
-
-1. **Rust installed** with `rustup`
-2. **AVR target added**: `rustup target add avr-unknown-gnu-atmega328`
-3. **avr-gcc toolchain** installed for your platform
-4. **ravedude** installed: `cargo install ravedude`
 
 ## Conclusion
 
