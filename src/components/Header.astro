@@ -1,0 +1,22 @@
+---
+// Site header: the "G.A. / Blog" trail.
+//   G.A.  -> garutyunov.com (portfolio)
+//   Blog  -> current site (blog.garutyunov.com), shown as the current crumb.
+//
+// Rendered with ga-ui-kit web components (registered client-side in
+// BaseLayout). The plain <a> children act as a no-JS / pre-upgrade fallback:
+// once the custom element upgrades it renders from the `items` attribute in its
+// shadow DOM and the light-DOM anchors are no longer displayed.
+import { PORTFOLIO_URL } from "../consts";
+
+const crumbs = [
+  { label: "G.A.", href: PORTFOLIO_URL },
+  { label: "Blog" },
+];
+---
+
+<ga-header>
+  <ga-breadcrumbs slot="brand" items={JSON.stringify(crumbs)}>
+    <a href={PORTFOLIO_URL}>G.A.</a> / <span>Blog</span>
+  </ga-breadcrumbs>
+</ga-header>

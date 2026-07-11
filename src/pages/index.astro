@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+
+const base = import.meta.env.BASE_URL;
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  {
+    posts.length === 0 ? (
+      <p class="post-list__excerpt">No posts yet — check back soon.</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <ga-card href={`${base}posts/${post.id}/`} interactive>
+              <h2 class="post-list__title">{post.data.title}</h2>
+              <p class="post-list__meta">
+                <FormattedDate date={post.data.pubDate} />
+                {post.data.tags.length > 0 && <> · {post.data.tags.join(", ")}</>}
+              </p>
+              <p class="post-list__excerpt">{post.data.description}</p>
+            </ga-card>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

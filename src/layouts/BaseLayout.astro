@@ -1,0 +1,52 @@
+---
+// Root HTML shell for every page.
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import { SITE_AUTHOR, PORTFOLIO_URL } from "../consts";
+
+// tokens.css is plain CSS (no HTMLElement access) so it is safe to import here
+// and is bundled into the page. The web components themselves are registered
+// client-side in the <script> below — importing the kit on the server would
+// throw because it extends HTMLElement at module load.
+import "@gaarutyunov/ui-kit/tokens.css";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  article?: boolean;
+  pubDate?: Date;
+  updatedDate?: Date;
+}
+
+const props = Astro.props;
+const year = new Date().getFullYear();
+const rssHref = `${import.meta.env.BASE_URL}rss.xml`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead {...props} />
+  </head>
+  <body class="ga-theme">
+    <Header />
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        &copy; {year} <a href={PORTFOLIO_URL}>{SITE_AUTHOR}</a> &middot;
+        <a href={rssHref}>RSS</a>
+      </div>
+    </footer>
+
+    <!-- Register the ga-ui-kit web components in the browser. -->
+    <script>
+      import "@gaarutyunov/ui-kit";
+    </script>
+  </body>
+</html>
