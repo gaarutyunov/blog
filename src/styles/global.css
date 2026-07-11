@@ -78,6 +78,12 @@ ga-header {
 .brand-current {
   color: var(--ga-fg);
 }
+/* Header action links (RSS, GitHub — right side). Colour comes from ga-header's
+   ::slotted(a) rule (muted -> fg on hover); SVGs inherit via fill: currentColor. */
+.header-action {
+  display: inline-flex;
+  align-items: center;
+}
 
 /* ---- Site footer ------------------------------------------------------- */
 .site-footer {
