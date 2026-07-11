@@ -1,22 +1,23 @@
 ---
-// Site header: the "G.A. / Blog" trail.
-//   G.A.  -> garutyunov.com (portfolio)
+// Site header: the "[G icon] / Blog" trail.
+//   icon  -> garutyunov.com (portfolio; the G monogram from that site)
 //   Blog  -> current site (blog.garutyunov.com), shown as the current crumb.
 //
-// Rendered with ga-ui-kit web components (registered client-side in
-// BaseLayout). The plain <a> children act as a no-JS / pre-upgrade fallback:
-// once the custom element upgrades it renders from the `items` attribute in its
-// shadow DOM and the light-DOM anchors are no longer displayed.
+// Built manually (not ga-breadcrumbs) because the breadcrumb labels are plain
+// escaped text and can't hold an <img>. Styled in global.css to match the
+// monospace breadcrumb look. Rendered inside ga-header (registered client-side
+// in BaseLayout).
 import { PORTFOLIO_URL } from "../consts";
 
-const crumbs = [
-  { label: "G.A.", href: PORTFOLIO_URL },
-  { label: "Blog" },
-];
+const iconSrc = `${import.meta.env.BASE_URL}icon.png`;
 ---
 
 <ga-header>
-  <ga-breadcrumbs slot="brand" items={JSON.stringify(crumbs)}>
-    <a href={PORTFOLIO_URL}>G.A.</a> / <span>Blog</span>
-  </ga-breadcrumbs>
+  <span class="brand-trail" slot="brand">
+    <a href={PORTFOLIO_URL} class="brand-home" aria-label="garutyunov.com">
+      <img src={iconSrc} alt="German Arutyunov" width="26" height="26" />
+    </a>
+    <span class="brand-sep" aria-hidden="true">/</span>
+    <span class="brand-current" aria-current="page">Blog</span>
+  </span>
 </ga-header>

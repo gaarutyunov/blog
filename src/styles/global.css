@@ -53,6 +53,32 @@ ga-header {
   background: var(--ga-bg);
 }
 
+/* "[G icon] / Blog" brand trail (light DOM, slotted into ga-header). */
+.brand-trail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-space-2);
+  font-family: var(--ga-font-mono);
+  font-size: var(--ga-fs-sm);
+}
+.brand-home {
+  display: inline-flex;
+  align-items: center;
+}
+.brand-home img {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--ga-radius);
+}
+.brand-sep {
+  color: var(--ga-dim);
+  user-select: none;
+}
+.brand-current {
+  color: var(--ga-fg);
+}
+
 /* ---- Site footer ------------------------------------------------------- */
 .site-footer {
   flex-shrink: 0;
