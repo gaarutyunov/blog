@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import icon from "astro-icon";
 
 // Production site is served from the apex custom domain. PR previews are
 // published to a subpath on the same gh-pages branch, so the deploy job passes
@@ -12,5 +13,5 @@ export default defineConfig({
   site: "https://blog.garutyunov.com",
   base,
   trailingSlash: "ignore",
-  integrations: [sitemap()],
+  integrations: [sitemap(), icon()],
 });
