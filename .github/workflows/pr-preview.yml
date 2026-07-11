@@ -32,9 +32,12 @@ jobs:
 
       - name: Install dependencies
         if: github.event.action != 'closed'
+        # @gaarutyunov/ui-kit is a PUBLIC GitHub Packages package; the built-in
+        # GITHUB_TOKEN (packages:read permission above) installs it. secrets.
+        # GH_TOKEN lacks read:packages and 403s, so don't use it here.
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build with preview base path
         if: github.event.action != 'closed'

@@ -32,12 +32,13 @@ jobs:
           scope: "@gaarutyunov"
 
       - name: Install dependencies
-        # @gaarutyunov/ui-kit lives on GitHub Packages; GH_TOKEN is the repo PAT
-        # already used by claude.yml and must carry read:packages (GITHUB_TOKEN
-        # fallback works for same-owner packages).
+        # @gaarutyunov/ui-kit is a PUBLIC package on GitHub Packages, so the
+        # built-in GITHUB_TOKEN (with the packages:read permission above) can
+        # install it. Do NOT use secrets.GH_TOKEN here — that PAT lacks the
+        # read:packages scope and 403s.
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         run: npm run build
