@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow the job to push the built site to the gh-pages branch, and read the
+# same-owner @gaarutyunov/ui-kit package from GitHub Packages with GITHUB_TOKEN.
+permissions:
+  contents: write
+  packages: read
+
+# Never run two production deploys at once.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: "@gaarutyunov"
+
+      - name: Install dependencies
+        # @gaarutyunov/ui-kit is a PUBLIC package on GitHub Packages, so the
+        # built-in GITHUB_TOKEN (with the packages:read permission above) can
+        # install it. Do NOT use secrets.GH_TOKEN here — that PAT lacks the
+        # read:packages scope and 403s.
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
+          # Preserve PR preview subtrees when publishing production.
+          clean: true
+          clean-exclude: |
+            pr-preview

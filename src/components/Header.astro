@@ -1,0 +1,40 @@
+---
+// Site header: the "[G icon] / Blog" trail.
+//   icon  -> garutyunov.com (portfolio; the G monogram from that site)
+//   Blog  -> current site (blog.garutyunov.com), shown as the current crumb.
+//
+// Built manually (not ga-breadcrumbs) because the breadcrumb labels are plain
+// escaped text and can't hold an <img> (tracked in ui-kit#4). Styled in
+// global.css to match the monospace breadcrumb look. Rendered inside ga-header
+// (registered client-side in BaseLayout).
+import { Icon } from "astro-icon/components";
+import { PORTFOLIO_URL, GITHUB_URL } from "../consts";
+
+const base = import.meta.env.BASE_URL;
+const iconSrc = `${base}icon.png`;
+const rssHref = `${base}rss.xml`;
+---
+
+<ga-header>
+  <span class="brand-trail" slot="brand">
+    <a href={PORTFOLIO_URL} class="brand-home" aria-label="garutyunov.com">
+      <img src={iconSrc} alt="German Arutyunov" width="26" height="26" />
+    </a>
+    <span class="brand-sep" aria-hidden="true">/</span>
+    <span class="brand-current" aria-current="page">Blog</span>
+  </span>
+
+  <!-- Right-aligned actions (ga-header default slot). Simple Icons via astro-icon. -->
+  <a href={rssHref} class="header-action" aria-label="RSS feed">
+    <Icon name="simple-icons:rss" width="20" height="20" />
+  </a>
+  <a
+    href={GITHUB_URL}
+    class="header-action"
+    aria-label="GitHub repository"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Icon name="simple-icons:github" width="20" height="20" />
+  </a>
+</ga-header>
