@@ -1,8 +1,9 @@
 ---
 // Root HTML shell for every page.
+import { Icon } from "astro-icon/components";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
-import { SITE_AUTHOR, PORTFOLIO_URL } from "../consts";
+import { SITE_AUTHOR, PORTFOLIO_URL, GITHUB_URL } from "../consts";
 
 // tokens.css is plain CSS (no HTMLElement access) so it is safe to import here
 // and is bundled into the page. The web components themselves are registered
@@ -38,9 +39,24 @@ const rssHref = `${import.meta.env.BASE_URL}rss.xml`;
       </div>
     </main>
     <footer class="site-footer">
-      <div class="container">
-        &copy; {year} <a href={PORTFOLIO_URL}>{SITE_AUTHOR}</a> &middot;
-        <a href={rssHref}>RSS</a>
+      <div class="container site-footer__inner">
+        <span class="site-footer__copy">
+          &copy; {year} <a href={PORTFOLIO_URL}>{SITE_AUTHOR}</a>
+        </span>
+        <span class="site-footer__links">
+          <a href={rssHref} class="header-action" aria-label="RSS feed">
+            <Icon name="simple-icons:rss" width="18" height="18" />
+          </a>
+          <a
+            href={GITHUB_URL}
+            class="header-action"
+            aria-label="GitHub repository"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="simple-icons:github" width="18" height="18" />
+          </a>
+        </span>
       </div>
     </footer>
 

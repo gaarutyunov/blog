@@ -99,6 +99,18 @@ ga-header {
 .site-footer a:hover {
   color: var(--ga-fg);
 }
+/* Copyright on the left, RSS/GitHub actions on the right. */
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ga-space-4);
+}
+.site-footer__links {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-space-4);
+}
 
 /* ---- Post list (index) ------------------------------------------------- */
 .post-list {
