@@ -41,6 +41,18 @@ a:hover {
   text-decoration: underline;
 }
 
+/* ---- Site header ------------------------------------------------------- */
+/* ga-header's own sticky lives on an element inside its shadow DOM, whose
+   containing block is the 56px host — so it can't actually stick. Make the
+   host sticky here: it's a direct child of the tall, scrolling <body>. */
+ga-header {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--ga-bg);
+}
+
 /* ---- Site footer ------------------------------------------------------- */
 .site-footer {
   flex-shrink: 0;
