@@ -1,20 +1,47 @@
 ---
-title: "Loop Engineering with Claude Code and Github"
-description: "How I ended up with two Claude loops running on my laptop 24/7."
+title: "Agentic Engineering: Part 1"
+description: "How I started, first steps"
 pubDate: 2026-08-01
 tags: ["claude-code", "github", "loop-engineering"]
 ---
 
-# Prequel
+This is the first part of the three part series introducing my Claude Code setup for pet projects.
 
-> You can skip this part completely if you just want to learn about my loop setup. I just wanted to share the journey fully to show how I got to loops and why it felt so good compared to all the pre-loop frustration.
+TODO: add TOC here
+
+My journey with agentic engineering did not start at work with executives forcing me to use Claude Code or with code completion.
+I have used Github Copilot before, but I never liked it, it never made me more productive.
+It started with Claude Mobile App in October 2025 because I finally had a way to code everywhere.
+
+After that happened I would split my journey into the following progression:
+
+1. Interactive Demo-driven Coding
+2. Spec-Driven Development
+3. Claude Github Action Era
+4. Harness Engineering
+5. Loop Engineering
+
+It wasn't this linear, but each part was about a skill that's really important to be able to get somewhere.
+
+# The feedback loop
+
+In my opinion the thing that affects the most the effectivenes of the engineering process is the feedback loop.
+There are a lot of ways to shorten the feedback loop:
+write SPECs, decompose, write tests, debug, show a demo, add observability, and so on.
+The main reason for all this is to be able to decrease the uncertainty at each step to make sure that the end result works as expected.
+
+When you first start vibe-coding you get results really quickly.
+Although the feedback loop is short at start, as the complexity rises it becomes less efficient.
+
+Since I started on my phone, there was no way to run the server locally and see the result.
+Therefore, I always used some kind of demo on Github Pages.
+This way I could make sure it actually worked.
+For my latest projects involving Postgres, I even run PGLite in the browser. 
+
+1. The feedback loop is very important. You need to see results at each step. People also call it vertical planning. Having a demo on each milestone is the best way to see the result.
 
 I have been using Claude Code since they launched their mobile app in October 2025.
 It was a game changer for me, because I finally could code everywhere.
-Every time I had an idea I just created a repository, launched the app and started coding:
-in the metro on my way to work, in bed, in the elevator.
-I have done this before on my laptop when I had to commute for one hour and a half to work,
-but it was never so easy and inspiring.
 
 The first thing I built was Malaga bike lanes [navigator](https://gaarutyunov.github.io/malaga-bike/). 
 I found a government database with geojson of the bike lanes.
