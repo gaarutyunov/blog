@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><!-- Global metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Astro v7.0.7"><link rel="icon" type="image/png" href="/pr-preview/pr-38/favicon.png"><link rel="apple-touch-icon" href="/pr-preview/pr-38/favicon.png"><!-- Canonical + robots --><link rel="canonical" href="https://blog.garutyunov.com/pr-preview/pr-38/posts/loop-engineering/"><meta name="robots" content="noindex, nofollow"><!-- Primary meta --><title>Agentic Engineering: Part 1</title><meta name="title" content="Agentic Engineering: Part 1"><meta name="description" content="How I started, first steps"><meta name="author" content="German Arutyunov"><!-- Open Graph --><meta property="og:type" content="article"><meta property="og:site_name" content="Blog — G.A."><meta property="og:title" content="Agentic Engineering: Part 1"><meta property="og:description" content="How I started, first steps"><meta property="og:url" content="https://blog.garutyunov.com/pr-preview/pr-38/posts/loop-engineering/"><meta property="og:image" content="https://blog.garutyunov.com/pr-preview/pr-38/og-image.png"><meta property="article:published_time" content="2026-08-01T00:00:00.000Z"><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Agentic Engineering: Part 1"><meta name="twitter:description" content="How I started, first steps"><meta name="twitter:image" content="https://blog.garutyunov.com/pr-preview/pr-38/og-image.png"><!-- RSS autodiscovery --><link rel="alternate" type="application/rss+xml" title="Blog — G.A." href="/pr-preview/pr-38/rss.xml"><!-- Structured data --><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Agentic Engineering: Part 1","description":"How I started, first steps","image":"https://blog.garutyunov.com/pr-preview/pr-38/og-image.png","author":{"@type":"Person","name":"German Arutyunov"},"datePublished":"2026-08-01T00:00:00.000Z","dateModified":"2026-08-01T00:00:00.000Z","mainEntityOfPage":"https://blog.garutyunov.com/pr-preview/pr-38/posts/loop-engineering/","url":"https://blog.garutyunov.com/pr-preview/pr-38/posts/loop-engineering/"}</script><link rel="stylesheet" href="/pr-preview/pr-38/_astro/FormattedDate.CNRCpTmg.css"></head><body class="ga-theme"><ga-header><span class="brand-trail" slot="brand"><a href="https://garutyunov.com" class="brand-home" aria-label="garutyunov.com"><img src="/pr-preview/pr-38/icon.png" alt="German Arutyunov" width="26" height="26"></a><span class="brand-sep" aria-hidden="true">/</span><span class="brand-current" aria-current="page">Blog</span></span><a href="/pr-preview/pr-38/rss.xml" class="header-action" aria-label="RSS feed"><svg width="20" height="20" data-icon="simple-icons:rss"><symbol id="ai:simple-icons:rss" viewBox="0 0 24 24"><path fill="currentColor" d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24zM3.291 17.415a3.3 3.3 0 0 1 3.293 3.295A3.303 3.303 0 0 1 3.283 24C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295M15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91"/></symbol><use href="#ai:simple-icons:rss"></use></svg></a><a href="https://github.com/gaarutyunov/blog" class="header-action" aria-label="GitHub repository" target="_blank" rel="noopener noreferrer"><svg width="20" height="20" data-icon="simple-icons:github"><symbol id="ai:simple-icons:github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol><use href="#ai:simple-icons:github"></use></svg></a></ga-header><main><div class="container"><article><header class="article__header"><h1 class="article__title">Agentic Engineering: Part 1</h1><p class="article__meta"><time datetime="2026-08-01T00:00:00.000Z">Aug 1, 2026</time> · claude-code, github, loop-engineering</p></header><div class="prose"><p>This is the first part of the three part series introducing my Claude Code setup for pet projects.</p>
+<p>TODO: add TOC here</p>
+<p>My journey with agentic engineering did not start at work with executives forcing me to use Claude Code or with code completion.
+I have used Github Copilot before, but I never liked it, it never made me more productive.
+It started with Claude Mobile App in October 2025 because I finally had a way to code everywhere.</p>
+<p>After that happened I would split my journey into the following progression:</p>
+<ol>
+<li>Interactive Demo-driven Coding</li>
+<li>Spec-Driven Development</li>
+<li>Claude Github Action Era</li>
+<li>Harness Engineering</li>
+<li>Loop Engineering</li>
+</ol>
+<p>It wasn’t this linear, but each part was about a skill that’s really important to be able to get somewhere.</p>
+<h1 id="the-feedback-loop">The feedback loop</h1>
+<p>In my opinion the thing that affects the most the effectivenes of the engineering process is the feedback loop.
+There are a lot of ways to shorten the feedback loop:
+write SPECs, decompose, write tests, debug, show a demo, add observability, and so on.
+The main reason for all this is to be able to decrease the uncertainty at each step to make sure that the end result works as expected.</p>
+<p>When you first start vibe-coding you get results really quickly.
+Although the feedback loop is short at start, as the complexity rises it becomes less efficient.</p>
+<p>Since I started on my phone, there was no way to run the server locally and see the result.
+Therefore, I always used some kind of demo on Github Pages.
+This way I could make sure it actually worked.
+For my latest projects involving Postgres, I even run PGLite in the browser.</p>
+<ol>
+<li>The feedback loop is very important. You need to see results at each step. People also call it vertical planning. Having a demo on each milestone is the best way to see the result.</li>
+</ol>
+<p>I have been using Claude Code since they launched their mobile app in October 2025.
+It was a game changer for me, because I finally could code everywhere.</p>
+<p>The first thing I built was Malaga bike lanes <a href="https://gaarutyunov.github.io/malaga-bike/">navigator</a>.
+I found a government database with geojson of the bike lanes.
+I needed it because I started riding a bike to work and Google Maps were quite outdated in that matter
+and are really bad for bike navigation.
+I have used it quite some times when I needed to go somewhere on bike.</p>
+<p>At some point I started using Claude Research and formulating a spec before starting coding,
+and my session turned more automonous.
+I would just start the agent and wait for it to work through it end to end.
+Then just test the deployed version and go back and forth until it worked.</p>
+<p>Then they launched the Github app and I mostly stopped using the mobile app.
+I would just formulate a spec, split it into tasks and launch claude in the comments.
+It was buggy as hell tho, it could get stuck and not push the changes or not create a PR.
+Sometimes it would run for an hour, the temporary Github token would expire and the agent couldn’t push the result.
+But I couldn’t go back to the mobile app, since the <code>Spec -&gt; Decomposition -&gt; Issue -&gt; PR -&gt; CI -&gt; Review -&gt; Merge</code> flow felt so natural.
+As a Team Lead I was just applying all the knowledge I had to orchestrate the agents instead of people.</p>
+<p>Another downside with both approaches was the tooling.
+I was coding with Rust and TypeScript mostly at this point and even cargo wasn’t available in the sandboxes.
+Because of this the feedback loop was quite big.
+The CI had to run until it showed that nothing was working.
+I had to copy-paste the output, because most of the github tools were also not available in Claude mobile before (or maybe I just didn’t know about them).</p>
+<p>I tried renting a server on Hetzner, configuring the action runner there and it got a bit better.
+But with all the projects beeing hacked (trivy, litellm), even Github warned about using self-hosted runners for public repositories because forks could get access to the secrets.
+Apart from it, paying for both the Claude subscription and the server is a bit too much.</p>
+<p>Dispatch just never worked on my old Macbook for some reason, so I haven’t tried it.
+In addition I didn’t want to code interactively, I liked the asynchronous nature of the proper <a href="https://www.sonarsource.com/blog/the-future-of-software-development-is-acdc/">AC/DC</a>.
+At this point a lot of orchestrations were already available, such as <a href="https://github.com/gastownhall/gastown">gastown</a>.
+But it also didn’t work, no idea why, Claude also couldn’t figure it out — it happens some time with vibe-coded tools.
+I also had a custom purely Claude framework with YAML files for state and subagents, skills, etc.
+It worked fine but was pretty unstable.
+I kind of had an idea of writing some custom tool that would work for me, but never had time for it.</p>
+<p>All the frustration ended when Claude introduced loops.
+Finally, Claude would mantain attention on the workflow.
+It wasn’t a skill loaded at some point during the session.
+It’s essentially a prompt that appears every tick in the context and drives LLM attention to the instructions in it.
+I have previosly tried the Ralph loop and it worked even better.
+This motivated me to finally build my harness around the notions I have picked up experimenting with different approaches.</p>
+<h1 id="the-harness">The harness</h1>
+<p>I started applying all the knowledge to build my autonomous software factory.
+The first thing I did was create a Github project (for task tracking) and the <a href="https://github.com/gaarutyunov/workspace">workspace</a> repository.
+No YAML files nor beads for task tracking. Now everything lived in Github tasks.
+No idea why I was inventing the wheel with some custom local things if all the necessary tools already existed.</p>
+<p>Then I installed a bunch of skills I have used for development, like <a href="https://www.skills.sh/jeffallan/claude-skills/golang-pro">golang-pro</a>, <a href="https://www.skills.sh/mattpocock/skills/tdd">tdd</a>, etc. You can check the full list in the workspace repository. Then I installed <a href="https://github.com/zzet/gortex">gortex</a>. I have previosly used <a href="https://github.com/oraios/serena">serena</a> and <a href="https://github.com/ForLoopCodes/contextplus">contextplus</a>, but gortex combines both of their feature sets and is written in Go.</p>
+<p>When the foundation was laid out, I started configuring the loops.
+The main idea of my loops is that they are a state machine, essentially how asynchronous Tasks work.
+Each tick the loop uses a custom script that fetches the state of the world:
+all the Github issues from the project in workable statuses, the comments from them,
+linked pull requests, their CI state, comments from them.
+In each issue it mantains the <a href="https://github.com/gaarutyunov/gopgql/issues/38#issuecomment-5084841300">loop state</a> to track what was already addresses and where it is now.
+I don’t map the Tasks states directly to the loop states, because they evolve a lot.
+I just use labels and the loop state for now.</p>
+<p>I ended up with two loops: <a href="https://github.com/gaarutyunov/workspace/blob/main/.agents/skills/auto-loop/SKILL.md">auto</a> and <a href="https://github.com/gaarutyunov/workspace/blob/main/.agents/skills/hitl-loop/SKILL.md">hitl</a>.
+auto loop is fully autonomous it picks up issues, works through them and merges once the CI is green.
+I use it when I have a detailed spec with milestones where I am sure about the definition of done and I just want the final result that I could fix later.</p>
+<p>The hitl (human-in-the-loop) has several review gates: the spec gate and the PR gate where I review the code and the demo. I mostly use it after the auto loop has performed the majority of work and laid out the foundaiton.
+I have let these loops run on my laptop for a couple of weeks now and I am pretty happy with the results.
+They have coded all the pet projects I have listed on my <a href="https://garutyunov.com/">website</a>.
+Of course, there is room for improvement but overall it’s working.
+I will talk about ideas that I have to improve them in my next blog.</p>
+</div></article></div></main><footer class="site-footer"><div class="container site-footer__inner"><span class="site-footer__copy">&copy; 2026 <a href="https://garutyunov.com">German Arutyunov</a></span><span class="site-footer__links"><a href="/pr-preview/pr-38/rss.xml" class="header-action" aria-label="RSS feed"><svg width="18" height="18" viewBox="0 0 24 24" data-icon="simple-icons:rss"><use href="#ai:simple-icons:rss"></use></svg></a><a href="https://github.com/gaarutyunov/blog" class="header-action" aria-label="GitHub repository" target="_blank" rel="noopener noreferrer"><svg width="18" height="18" viewBox="0 0 24 24" data-icon="simple-icons:github"><use href="#ai:simple-icons:github"></use></svg></a></span></div></footer><!-- Register the ga-ui-kit web components in the browser. --><script type="module" src="/pr-preview/pr-38/_astro/BaseLayout.astro_astro_type_script_index_0_lang.DiFvddh2.js"></script></body></html>
